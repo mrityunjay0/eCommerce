@@ -25,4 +25,9 @@ public class HomeController {
     public String products(){
         return "products"; // Returns the view name "products"
     }
+
+    @GetMapping("/product")
+    public String product(){
+        return "viewProduct"; // Returns the view name "viewProduct"
+    }
 }
