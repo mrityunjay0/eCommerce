@@ -20,4 +20,9 @@ public class HomeController {
     public String register(){
         return "register"; // Returns the view name "register"
     }
+
+    @GetMapping("/products")
+    public String products(){
+        return "products"; // Returns the view name "products"
+    }
 }
