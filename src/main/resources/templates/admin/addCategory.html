@@ -75,12 +75,20 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>hello</td>
-                                <td>helloWorld</td>
-                                <td>Image here</td>
-                                <td>Action button </td>
+                            <tr th:each="cat,c : ${categories}">
+                                <th scope="row">[[${c.count}]]</th>
+                                <td>[[${cat.name}]]</td>
+                                <td>[[${cat.isActive}]]</td>
+                                <td><img th:src="@{'/img/category_img/'+${cat.imageName}}"
+                                         width="80px" height="80px" alt="img"></td>
+                                <td>
+
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-pen-to-square fa-1x"></i>Edit</a>
+
+                                    <a th:href="@{'/admin/deleteCategory/'+${cat.id}}" class="btn btn-danger btn-sm">
+                                        <i class="fa-solid fa-trash fa-1x"></i>Delete</a>
+                                </td>
                             </tr>
 
                             </tbody>

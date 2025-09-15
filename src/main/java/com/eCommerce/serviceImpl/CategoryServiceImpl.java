@@ -30,4 +30,14 @@ public class CategoryServiceImpl implements CategoryService {
     public boolean existsByName(String name) {
         return categoryRepository.existsByName(name);
     }
+
+    @Override
+    public boolean deleteCategory(int id) {
+        Category category = categoryRepository.findById(id).orElse(null);
+        if(category != null){
+            categoryRepository.delete(category);
+            return true;
+        }
+        return false;
+    }
 }
