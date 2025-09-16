@@ -83,10 +83,12 @@
                                          width="80px" height="80px" alt="img"></td>
                                 <td>
 
-                                    <a href="#" class="btn btn-primary btn-sm">
+                                    <a th:href="@{'/admin/loadUpdateCategory/'+${cat.id}}" class="btn btn-primary btn-sm">
                                         <i class="fa-solid fa-pen-to-square fa-1x"></i>Edit</a>
 
-                                    <a th:href="@{'/admin/deleteCategory/'+${cat.id}}" class="btn btn-danger btn-sm">
+                                    <a th:href="@{'/admin/deleteCategory/'+${cat.id}}"
+                                       onclick="return confirm('Are you sure you want to delete this category?')"
+                                       class="btn btn-danger btn-sm">
                                         <i class="fa-solid fa-trash fa-1x"></i>Delete</a>
                                 </td>
                             </tr>

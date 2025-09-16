@@ -89,4 +89,40 @@ public class AdminController {
 
         return "redirect:/admin/addCategory"; // Redirects to the addCategory page after deletion
     }
+
+
+    // Loads the category update form with the existing category details
+    @GetMapping("/loadUpdateCategory/{id}")
+    public String loadUpdateCategory(@PathVariable int id, Model m){
+        m.addAttribute("category", categoryService.getCategoryById(id)); // Adds the category to be updated to the model
+        return "admin/editCategory"; // Returns the view name "admin/ediCategory"
+    }
+
+
+    // Handles the form submission for updating an existing category
+    @PostMapping("/updateCategory")
+    public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
+
+        Category oldCategory = categoryService.getCategoryById(category.getId()); // Save the updated category
+        String imageNameOld = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
+
+        if(oldCategory!=null){
+            oldCategory.setName(category.getName());
+            oldCategory.setActive(category.isActive());
+            oldCategory.setImageName(imageNameOld);
+        }
+        Category updatedCategory = categoryService.saveCategory(oldCategory);
+
+        if(updatedCategory==null){
+            session.setAttribute("errorMsg", "Something went wrong!! Category not updated.");
+        }
+        else{
+            File saveFile = new ClassPathResource("static/img/category_img").getFile();
+            File file1 = new File(saveFile.getAbsolutePath()+File.separator+imageNameOld);
+            file.transferTo(file1); // Save the uploaded file to the specified path
+            session.setAttribute("successMsg", "Category updated successfully.");
+        }
+
+        return "redirect:/admin/addCategory"; // Redirects to the addCategory page after updating
+    }
 }
