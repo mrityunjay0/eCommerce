@@ -14,11 +14,19 @@
                 <div class="card card-sh">
                     <div class="card-header text-center ">
                         <p class="fs-4">Add Product</p>
-<!--                        <p class="text-success fw-bold">add</p>-->
-<!--                        <p class="text-danger fw-bold">add2</p>-->
+
+                        <th:block th:if="${session.successMsg}">
+                            <p class="text-success fw-bold">[[${session.successMsg}]]</p>
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+                        <th:block th:if="${session.errorMsg}">
+                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
                     </div>
                     <div class="card-body">
-                        <form action="" method="post"
+                        <form action="/admin/saveProduct" method="post"
                               enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label>Enter Title</label> <input type="text" name="title"
@@ -34,10 +42,8 @@
                             <div class="mb-3">
                                 <label>Category</label> <select class="form-control"
                                                                 name="category">
-                                <option>--select--</option>
-                                <option> opt 1</option>
-                                <option> opt2</option>
-                                <option> opt3</option>
+                                <option>--Select--</option>
+                                <option th:each="c:${categories}">[[${c.name}]]</option>
                             </select>
                             </div>
 
@@ -71,7 +77,7 @@
                                 </div>
 
                                 <div class="mb-3 col">
-                                    <label>Upload Image</label> <input type="file" name="file"
+                                    <label>Upload Image</label> <input type="file" name="file" required
                                                                        class="form-control">
                                 </div>
                             </div>

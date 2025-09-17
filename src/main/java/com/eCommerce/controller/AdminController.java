@@ -1,7 +1,9 @@
 package com.eCommerce.controller;
 
 import com.eCommerce.entity.Category;
+import com.eCommerce.entity.Product;
 import com.eCommerce.service.CategoryService;
+import com.eCommerce.service.ProductService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,28 +13,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     public CategoryService categoryService;
+    private ProductService productService;
 
-    public AdminController(CategoryService categoryService) {
+    public AdminController(CategoryService categoryService, ProductService productService) {
         this.categoryService = categoryService;
+        this.productService = productService;
     }
 
+
+    // Displays the admin index page
     @GetMapping("/")
     public String adminIndex() {
 
         return "admin/index"; // Returns the view name "admin/index"
     }
 
-    @GetMapping("/addProduct")
-    public String addProduct(){
-
-        return "admin/addProduct"; // Returns the view name "admin/addProduct"
-    }
 
     // Displays the form to add a new category and lists existing categories
     @GetMapping("/addCategory")
@@ -124,5 +126,37 @@ public class AdminController {
         }
 
         return "redirect:/admin/addCategory"; // Redirects to the addCategory page after updating
+    }
+
+
+    @GetMapping("/addProduct")
+    public String addProduct(Model m){
+
+        List<Category> categories = categoryService.getAllCategories(); // Fetches all categories from the service
+        m.addAttribute("categories", categories); // Adds the list of categories to the model
+        return "admin/addProduct"; // Returns the view name "admin/addProduct"
+    }
+
+
+    @PostMapping("/saveProduct")
+    public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
+
+        String imageName = file!=null ? file.getOriginalFilename() : "No image";
+        product.setImageName(imageName);
+
+            Product saveProduct = productService.saveProduct(product); // Save the product using the product service
+
+            if(saveProduct==null){
+                session.setAttribute("errorMsg", "Something went wrong!! Product not added.");
+            }
+            else{
+                File saveFile = new ClassPathResource("static/img/product_img").getFile();
+                File file1 = new File(saveFile.getAbsolutePath()+File.separator+imageName);
+                file.transferTo(file1); // Save the uploaded file to the specified path
+
+                session.setAttribute("successMsg", "Product added successfully.");
+            }
+
+        return "redirect:/admin/addProduct"; // Redirects to the addProduct page after saving
     }
 }

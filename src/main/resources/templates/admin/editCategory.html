@@ -13,6 +13,7 @@
                 <div class="card card-sh">
                     <div class="card-header text-center">
                         <p class="fs-4">Update Category</p>
+
                         <th:block th:if="${session.successMsg}">
                             <p class="text-success fw-bold">[[${session.successMsg}]]</p>
                             <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
@@ -21,6 +22,7 @@
                             <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
                             <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                         </th:block>
+
                     </div>
 
                     <div class="card-body">
