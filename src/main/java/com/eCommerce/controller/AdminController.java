@@ -159,4 +159,71 @@ public class AdminController {
 
         return "redirect:/admin/addProduct"; // Redirects to the addProduct page after saving
     }
+
+
+    // Displays the list of all products
+    @GetMapping("/viewProducts")
+    public String viewProducts(Model m){
+        List<Product> products = productService.getAllProducts(); // Fetches all products from the service
+        m.addAttribute("products", products); // Adds the list of products to the model
+
+        return "admin/viewProducts"; // Returns the view name "admin/viewProducts"
+    }
+
+
+    // Handles the deletion of a product by its ID
+    @GetMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable int id, HttpSession session){
+
+        boolean isDeleted = productService.deleteProduct(id); // Attempt to delete the product
+
+        if(isDeleted){
+            session.setAttribute("successMsg", "Product deleted successfully.");
+        }
+        else{
+            session.setAttribute("errorMsg", "Something went wrong!! Product not deleted.");
+        }
+
+        return "redirect:/admin/viewProducts"; // Redirects to the viewProducts page after deletion
+    }
+
+
+    // Loads the product update form with the existing product details
+    @GetMapping("/loadUpdateProduct/{id}")
+    public String loadUpdateProduct(@PathVariable int id, Model m){
+        m.addAttribute("product", productService.getProductById(id)); // Adds the product to be updated to the model
+        m.addAttribute("categories", categoryService.getAllCategories()); // Adds the list of categories to the model
+        return "admin/editProduct"; // Returns the view name "admin/editProduct
+    }
+
+
+    // Handles the form submission for updating an existing product
+    @PostMapping("/updateProduct")
+    public String updateProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
+
+        Product oldProduct = productService.getProductById(product.getId()); // Load the existing product
+        String imageNameOld = file.isEmpty() ? oldProduct.getImageName() : file.getOriginalFilename();
+
+        if(oldProduct!=null){
+            oldProduct.setTitle(product.getTitle());
+            oldProduct.setDescription(product.getDescription());
+            oldProduct.setPrice(product.getPrice());
+            oldProduct.setCategory(product.getCategory());
+            oldProduct.setStock(product.getStock());
+            oldProduct.setImageName(imageNameOld);
+        }
+        Product updatedProduct = productService.saveProduct(oldProduct);
+
+        if(updatedProduct==null){
+            session.setAttribute("errorMsg", "Something went wrong!! Product not updated.");
+        }
+        else{
+            File saveFile = new ClassPathResource("static/img/product_img").getFile();
+            File file1 = new File(saveFile.getAbsolutePath()+File.separator+imageNameOld);
+            file.transferTo(file1); // Save the uploaded file to the specified path
+            session.setAttribute("successMsg", "Product updated successfully.");
+        }
+
+        return "redirect:/admin/viewProducts"; // Redirects to the viewProducts page after updating
+    }
 }

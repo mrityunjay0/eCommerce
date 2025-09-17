@@ -15,14 +15,28 @@
                     <div class="card-header text-center ">
                         <p class="fs-4">Add Product</p>
 
-                        <th:block th:if="${session.successMsg}">
-                            <p class="text-success fw-bold">[[${session.successMsg}]]</p>
+<!--                        <th:block th:if="${session.successMsg}">-->
+<!--                            <p class="text-success fw-bold">[[${session.successMsg}]]</p>-->
+<!--                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>-->
+<!--                        </th:block>-->
+<!--                        <th:block th:if="${session.errorMsg}">-->
+<!--                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>-->
+<!--                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>-->
+<!--                        </th:block>-->
+
+                        <div th:if="${session.successMsg}" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                             role="alert" style="z-index: 2000;">
+                            [[${session.successMsg}]]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-                        </th:block>
-                        <th:block th:if="${session.errorMsg}">
-                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                        </div>
+
+                        <div th:if="${session.errorMsg}" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                             role="alert" style="z-index: 2000;">
+                            [[${session.errorMsg}]]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-                        </th:block>
+                        </div>
 
                     </div>
                     <div class="card-body">
