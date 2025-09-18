@@ -27,11 +27,14 @@
                     <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
                         <div class="card-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action active text-center" aria-current="true">
-                                    Categories
+                                <p class="fs-6">Categories</p>
+                                <a href="/products" th:classappend="${paramValue == null ? 'active' : ''}"
+                                   class="list-group-item list-group-item-action text-center" aria-current="true">
+                                    All
                                 </a>
-                                <a href="#" th:each="cat : ${categories}"
-                                   class="list-group-item list-group-item-action">[[${cat.name}]]</a>
+                                <a th:each="cat : ${categories}" th:href="@{'/products?category=' + ${cat.name}}"
+                                   th:classappend="${paramValue == cat.name ? 'active' : ''}"
+                                   class="text-center list-group-item list-group-item-action">[[${cat.name}]]</a>
                             </div>
                         </div>
                     </div>
@@ -56,7 +59,7 @@
                                                     <span class="text-secondary text-decoration-line-through">&#8377;[[${prod.price}]]</span>
                                                     <span class="fs-6 text-success fw-bold">[[${prod.discount}]]% off</span>
                                                 </p>
-                                                <a href="/viewDetails" class="btn btn-primary col-md-8 offset-md-2">View Details</a>
+                                                <a th:href="@{'/viewDetails/'+${prod.id}}" class="btn btn-primary col-md-8 offset-md-2">View Details</a>
                                             </div>
                                         </div>
                                     </div>

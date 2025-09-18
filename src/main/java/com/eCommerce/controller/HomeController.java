@@ -5,6 +5,8 @@ import com.eCommerce.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
@@ -35,15 +37,17 @@ public class HomeController {
 
     // Displays the products page with active categories and products
     @GetMapping("/products")
-    public String products(Model m){
+    public String products(Model m, @RequestParam(value = "category", required = false) String category) {
 
         m.addAttribute("categories", categoryService.getAllActiveCategories()); // Adds active categories to the model
-        m.addAttribute("products", productService.getAllActiveProducts()); // Adds active products to the model
+        m.addAttribute("products", productService.getAllActiveProducts(category)); // Adds active products to the model
+        m.addAttribute("paramValue", category); // Adds the category parameter to the model
         return "products"; // Returns the view name "products"
     }
 
-    @GetMapping("/viewDetails")
-    public String product(){
+    @GetMapping("/viewDetails/{id}")
+    public String product(@PathVariable int id, Model m) {
+        m.addAttribute("product", productService.getProductById(id)); // Adds the product details to the model
         return "viewProduct"; // Returns the view name "viewProduct"
     }
 }

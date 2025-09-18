@@ -18,23 +18,32 @@
 
                     <div class="col-md-6">
 
-                        <p class="fs-3"> HP Laptop</p>
+                        <p class="fs-3">[[${product.title}]]</p>
                         <p>
-                            <span class="fw-bold">Description : Newly launched fast laptop.</span><br>
+                            <span class="fw-bold">Description :</span><br>
+                            <span class="text-center">[[${product.description}]]</span>
                         </p>
 
                         <p>
-                            <span class="fw-bold"> Product Details: </span> <br> Status : HP Laptop 15s
-                            <span class="badge bg-success">Available</span>
-                            <span class="badge bg-warning">out of stock</span>
+                            <span class="fw-bold"> Product Details: </span> <br> Status :
+                            <th:block>
+                                <span th:if="${product.stock > 0}">
+                                    <span class="badge bg-success">Available</span>
+                                </span>
+                                <span th:if="${product.stock == 0}">
+                                    <span class="badge bg-danger">out of stock</span>
+                                </span>
+                            </th:block>
 
-                            <br> Category: Laptop<br> Policy : 7 Days Replacement & Return
+                            <br> Category: [[${product.category}]]<br> Policy : 7 Days Replacement & Return
                         </p>
 
-                        <p class="fs-5 fw-bold">
-                            Price :&nbsp; &nbsp; &nbsp; &nbsp;<i class="fas fa-rupee-sign"></i>70999
-                            <span class="fs-6 text-decoration-line-through text-secondary">142000</span>
-                            <span class="fs-6  text-success">50% off</span>
+                        <p class="fs-5">
+                            <span class="fw-bold">Price :</span>
+<!--                            <i class="fas fa-rupee-sign"></i>-->
+                            <span class="fw-bold">&#8377;[[${product.discountPrice}]]</span>
+                            <span class="fs-6 text-decoration-line-through text-secondary">[[${product.price}]]</span>
+                            <span class="fs-6 text-success">[[${product.discount}]]% off</span>
                         </p>
 
                         <div class="row">
@@ -52,9 +61,15 @@
                             </div>
                         </div>
 
-                                <a href="/signin" class="btn btn-danger col-md-12">Add To Cart</a>
-                        <br><br>
-                                <a href="#" class="btn text-white btn-warning col-md-12">Out of Stock</a>
+                        <th:block>
+                            <span th:if="${product.stock > 0}">
+                                <a href="/signin" class="btn btn-success col-md-12">Add To Cart</a>
+                            </span>
+                            <span th:if="${product.stock == 0}">
+                                <a href="#" class="btn text-white btn-danger col-md-12">Out of Stock</a>
+                            </span>
+                        </th:block>
+
                     </div>
                 </div>
             </div>

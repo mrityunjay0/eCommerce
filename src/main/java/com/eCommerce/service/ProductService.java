@@ -14,5 +14,5 @@ public interface ProductService {
 
     public boolean deleteProduct(int id);
 
-    public List<Product> getAllActiveProducts();
+    public List<Product> getAllActiveProducts(String category);
 }
