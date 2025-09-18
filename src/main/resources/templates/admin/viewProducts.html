@@ -45,7 +45,7 @@
 
                     <div class="row">
                         <div class="col">
-                            <input type="text" class="form-control " name="ch">
+                            <input type="text" class="form-control " name="ch" placeholder="Search here...">
                         </div>
                         <div class="col">
                             <button class="btn btn-primary col">Search</button>
@@ -62,28 +62,30 @@
                 <table class="table table-bordered">
                     <thead class="table-light ">
                     <tr>
-                        <th scope="col">Sl No</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Price</th>
-<!--                        <th scope="col">Discount</th>-->
-<!--                        <th scope="col">Discount Price</th>-->
+                        <th class="text-center" scope="col">Sl No</th>
+                        <th class="text-center" scope="col">Image</th>
+                        <th class="text-center" scope="col">Title</th>
+                        <th class="text-center" scope="col">Category</th>
+                        <th class="text-center" scope="col">Price</th>
+                        <th class="text-center" scope="col">Discount</th>
+                        <th class="text-center" scope="col">Discount Price</th>
 <!--                        <th scope="col">Status</th>-->
-                        <th scope="col">Stock</th>
-                        <th scope="col">Action</th>
+                        <th class="text-center" scope="col">Stock</th>
+                        <th class="text-center" scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="p,c:${products}">
-                        <th scope="row">[[${c.count}]]</th>
-                        <td><img th:src="@{'/img/product_img/'+${p.imageName}}"
+                        <th class="text-center" scope="row">[[${c.count}]]</th>
+                        <td class="text-center"><img th:src="@{'/img/product_img/'+${p.imageName}}"
                                  width="70px" height="70px" alt="image"></td>
-                        <td>[[${p.title}]]</td>
-                        <td>[[${p.category}]]</td>
-                        <td>[[${p.price}]]</td>
-                        <td>[[${p.stock}]]</td>
-                        <td>
+                        <td class="text-center">[[${p.title}]]</td>
+                        <td class="text-center">[[${p.category}]]</td>
+                        <td class="text-center">[[${p.price}]]</td>
+                        <td class="text-center">[[${p.discount}]]%</td>
+                        <td class="text-center">[[${p.discountPrice}]]</td>
+                        <td class="text-center">[[${p.stock}]]</td>
+                        <td class="text-center">
 
                             <a th:href="@{'/admin/loadUpdateProduct/'+${p.id}}"
                                class="btn btn-sm btn-primary"><i class="fa-solid fa-pen-to-square">

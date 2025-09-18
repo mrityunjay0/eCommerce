@@ -144,6 +144,8 @@ public class AdminController {
         String imageName = file!=null ? file.getOriginalFilename() : "No image";
         product.setImageName(imageName);
 
+        product.setDiscountPrice(product.getPrice() - (product.getPrice() * product.getDiscount() / 100.0));
+
             Product saveProduct = productService.saveProduct(product); // Save the product using the product service
 
             if(saveProduct==null){
@@ -204,24 +206,37 @@ public class AdminController {
         Product oldProduct = productService.getProductById(product.getId()); // Load the existing product
         String imageNameOld = file.isEmpty() ? oldProduct.getImageName() : file.getOriginalFilename();
 
-        if(oldProduct!=null){
-            oldProduct.setTitle(product.getTitle());
-            oldProduct.setDescription(product.getDescription());
-            oldProduct.setPrice(product.getPrice());
-            oldProduct.setCategory(product.getCategory());
-            oldProduct.setStock(product.getStock());
-            oldProduct.setImageName(imageNameOld);
-        }
-        Product updatedProduct = productService.saveProduct(oldProduct);
-
-        if(updatedProduct==null){
-            session.setAttribute("errorMsg", "Something went wrong!! Product not updated.");
+        if(product.getDiscount()<0 || product.getDiscount()>100){
+            session.setAttribute("errorMsg", "Invalid discount value! Please enter a value between 0 and 100.");
+            return "redirect:/admin/loadUpdateProduct/"+product.getId();
         }
         else{
-            File saveFile = new ClassPathResource("static/img/product_img").getFile();
-            File file1 = new File(saveFile.getAbsolutePath()+File.separator+imageNameOld);
-            file.transferTo(file1); // Save the uploaded file to the specified path
-            session.setAttribute("successMsg", "Product updated successfully.");
+
+            if(oldProduct!=null){
+                oldProduct.setTitle(product.getTitle());
+                oldProduct.setDescription(product.getDescription());
+                oldProduct.setPrice(product.getPrice());
+                oldProduct.setCategory(product.getCategory());
+                oldProduct.setStock(product.getStock());
+                oldProduct.setImageName(imageNameOld);
+                oldProduct.setDiscount(product.getDiscount());
+
+                double discountPrice = oldProduct.getPrice() - (oldProduct.getPrice() * oldProduct.getDiscount() / 100);
+                oldProduct.setDiscountPrice(discountPrice);
+
+            }
+            Product updatedProduct = productService.saveProduct(oldProduct);
+
+            if(updatedProduct==null){
+                session.setAttribute("errorMsg", "Something went wrong!! Product not updated.");
+            }
+            else{
+                File saveFile = new ClassPathResource("static/img/product_img").getFile();
+                File file1 = new File(saveFile.getAbsolutePath()+File.separator+imageNameOld);
+                file.transferTo(file1); // Save the uploaded file to the specified path
+                session.setAttribute("successMsg", "Product updated successfully.");
+            }
+
         }
 
         return "redirect:/admin/viewProducts"; // Redirects to the viewProducts page after updating

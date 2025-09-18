@@ -6,108 +6,125 @@
     <title>Add Product</title>
 </head>
 <body>
-<section>
+<section class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
     <div class="container p-5 mt-3">
         <div class="row">
 
-            <div class="col-md-6 offset-md-3">
-                <div class="card card-sh">
-                    <div class="card-header text-center ">
-                        <p class="fs-4">Update Product</p>
+                <div class="col-md-8 offset-md-2">
+                    <div class="card card-sh">
+                        <div class="card-header text-center ">
+                            <p class="fs-4">Update Product</p>
 
-                        <!--                        <th:block th:if="${session.successMsg}">-->
-                        <!--                            <p class="text-success fw-bold">[[${session.successMsg}]]</p>-->
-                        <!--                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>-->
-                        <!--                        </th:block>-->
-                        <!--                        <th:block th:if="${session.errorMsg}">-->
-                        <!--                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>-->
-                        <!--                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>-->
-                        <!--                        </th:block>-->
+                            <!--                        <th:block th:if="${session.successMsg}">-->
+                            <!--                            <p class="text-success fw-bold">[[${session.successMsg}]]</p>-->
+                            <!--                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>-->
+                            <!--                        </th:block>-->
+                            <!--                        <th:block th:if="${session.errorMsg}">-->
+                            <!--                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>-->
+                            <!--                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>-->
+                            <!--                        </th:block>-->
 
-                        <div th:if="${session.successMsg}" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
-                             role="alert" style="z-index: 2000;">
-                            [[${session.successMsg}]]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            <div th:if="${session.successMsg}" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                                 role="alert" style="z-index: 2000;">
+                                [[${session.successMsg}]]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            </div>
+
+                            <div th:if="${session.errorMsg}" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                                 role="alert" style="z-index: 2000;">
+                                [[${session.errorMsg}]]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            </div>
+
                         </div>
-
-                        <div th:if="${session.errorMsg}" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
-                             role="alert" style="z-index: 2000;">
-                            [[${session.errorMsg}]]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-                        </div>
-
-                    </div>
-                    <div class="card-body">
-                        <form action="/admin/updateProduct" method="post"
-                              enctype="multipart/form-data">
-                            <input type="hidden" th:value="${product.id}" name="id">
-                            <div class="mb-3">
-                                <label>Enter Title</label> <input type="text" name="title" th:value="${product.title}"
-                                                                  class="form-control">
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Enter Description</label>
-                                <textarea rows="3" cols="" class="form-control"
-                                          name="description" th:value="${product.description}">[[${product.description}]]</textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Category</label> <select class="form-control"
-                                                                name="category">
-<!--                                <option>[[${product.category}]]</option>-->
-                                <option th:each="c:${categories}"
-                                        th:value="${product.category}">[[${c.name}]]
-                                </option>
-                            </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Enter Price</label> <input type="number" name="price" th:value="${product.price}"
-                                                                  class="form-control">
-                            </div>
-
-                            <!--                            <div class="mb-3">-->
-                            <!--                                <label>Status</label>-->
-
-                            <!--                                <div class="form-check">-->
-                            <!--                                    <input class="form-check-input" type="radio" checked-->
-                            <!--                                           value="true" name="isActive" id="flexRadioDefault1">-->
-                            <!--                                    <label class="form-check-label" for="flexRadioDefault1">-->
-                            <!--                                        Active </label>-->
-                            <!--                                </div>-->
-
-                            <!--                                <div class="form-check">-->
-                            <!--                                    <input class="form-check-input" type="radio" name="isActive"-->
-                            <!--                                           value="false" id="flexRadioDefault2"> <label-->
-                            <!--                                        class="form-check-label" for="flexRadioDefault2">-->
-                            <!--                                    Inactive </label>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
-
-                            <div class="row">
-                                <div class="mb-3 col">
-                                    <label>Enter Stock</label> <input type="text" name="stock" th:value="${product.stock}"
+                        <div class="card-body">
+                            <form action="/admin/updateProduct" method="post"
+                                  enctype="multipart/form-data">
+                                <input type="hidden" th:value="${product.id}" name="id">
+                                <div class="mb-3">
+                                    <label>Enter Title</label> <input type="text" name="title" th:value="${product.title}"
                                                                       class="form-control">
                                 </div>
 
-                                <div class="mb-3 col">
-                                    <label>Upload Image</label> <input type="file" name="file" required
-                                                                       class="form-control">
+                                <div class="mb-3">
+                                    <label>Enter Description</label>
+                                    <textarea rows="3" cols="" class="form-control"
+                                              name="description" th:value="${product.description}">[[${product.description}]]</textarea>
                                 </div>
-                            </div>
-                            <img th:src="@{'/img/product_img/'+${product.imageName}}"
-                                 width="80px" height="80px" alt="img">
-                            <p class="fw-bold">Current Image</p>
 
-                            <button class="btn btn-primary col-md-12"
-                                    onclick="return confirm('Are you sure you want to update this product?')">Update</button>
-                        </form>
+                                <div class="row">
+                                    <div class="mb-3 col">
+                                        <label>Category</label> <select class="form-control" name="category">
+
+                                        <option th:each="c:${categories}"
+                                                th:value="${product.category}">[[${c.name}]]
+                                        </option>
+
+                                    </select>
+                                    </div>
+
+                                    <div class="mb-3 col">
+                                        <label>Enter Price</label> <input type="number" name="price" th:value="${product.price}"
+                                                                          class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="mb-3 col">
+
+                                        <label>Discount</label>
+                                        <input type="number" name="discount" th:value="${product.discount}" class="form-control">
+
+                                    </div>
+
+                                    <div class="mb-3 col">
+
+                                        <label>Discount Price</label> <input type="number" th:value="${product.discountPrice}"
+                                                                             readonly class="form-control">
+                                    </div>
+                                </div>
+
+                                <!--                            <div class="mb-3">-->
+                                <!--                                <label>Status</label>-->
+
+                                <!--                                <div class="form-check">-->
+                                <!--                                    <input class="form-check-input" type="radio" checked-->
+                                <!--                                           value="true" name="isActive" id="flexRadioDefault1">-->
+                                <!--                                    <label class="form-check-label" for="flexRadioDefault1">-->
+                                <!--                                        Active </label>-->
+                                <!--                                </div>-->
+
+                                <!--                                <div class="form-check">-->
+                                <!--                                    <input class="form-check-input" type="radio" name="isActive"-->
+                                <!--                                           value="false" id="flexRadioDefault2"> <label-->
+                                <!--                                        class="form-check-label" for="flexRadioDefault2">-->
+                                <!--                                    Inactive </label>-->
+                                <!--                                </div>-->
+                                <!--                            </div>-->
+
+                                <div class="row">
+                                    <div class="mb-3 col">
+                                        <label>Enter Stock</label> <input type="text" name="stock" th:value="${product.stock}"
+                                                                          class="form-control">
+                                    </div>
+
+                                    <div class="mb-3 col">
+                                        <label>Upload Image</label> <input type="file" name="file" required
+                                                                           class="form-control">
+                                    </div>
+                                </div>
+                                <img th:src="@{'/img/product_img/'+${product.imageName}}"
+                                     width="80px" height="80px" alt="img">
+                                <p class="fw-bold">Current Image</p>
+
+                                <button class="btn btn-primary col-md-12"
+                                        onclick="return confirm('Are you sure you want to update this product?')">Update</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
 
         </div>
     </div>

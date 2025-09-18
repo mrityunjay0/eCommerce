@@ -53,17 +53,36 @@
                                           name="description"></textarea>
                             </div>
 
-                            <div class="mb-3">
-                                <label>Category</label> <select class="form-control"
-                                                                name="category">
-                                <option>--Select--</option>
-                                <option th:each="c:${categories}">[[${c.name}]]</option>
-                            </select>
+                            <div class="row">
+
+                                <div class="mb-3">
+                                    <label>Category</label> <select class="form-control"
+                                                                    name="category">
+                                    <option>--Select--</option>
+                                    <option th:each="c:${categories}">[[${c.name}]]</option>
+                                </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Enter Price</label> <input type="number" name="price"
+                                                                      class="form-control">
+                                </div>
+
                             </div>
 
-                            <div class="mb-3">
-                                <label>Enter Price</label> <input type="number" name="price"
-                                                                  class="form-control">
+                            <div class="row">
+                                <div class="mb-3 col">
+
+                                    <label>Discount</label>
+                                    <input type="number" name="discount" class="form-control">
+
+                                </div>
+
+                                <div class="mb-3 col">
+
+                                    <label>Discount Price</label> <input type="number" name="discountPrice"
+                                                                         readonly class="form-control">
+                                </div>
                             </div>
 
 <!--                            <div class="mb-3">-->
