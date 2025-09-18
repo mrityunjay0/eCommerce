@@ -27,11 +27,13 @@ public class Product {
 
     private Double discountPrice;
 
+    private boolean isActive;
+
 
     public Product() {
     }
 
-    public Product(int id, String title, String description, String category, Double price, int stock, String imageName, int discount, Double discountPrice) {
+    public Product(int id, String title, String description, String category, Double price, int stock, String imageName, int discount, Double discountPrice, boolean isActive) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -41,6 +43,7 @@ public class Product {
         this.imageName = imageName;
         this.discount = discount;
         this.discountPrice = discountPrice;
+        this.isActive = isActive;
     }
 
     public int getId() {
@@ -114,4 +117,13 @@ public class Product {
     public void setDiscountPrice(Double discountPrice) {
         this.discountPrice = discountPrice;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
 }

@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    public CategoryService categoryService;
+    private CategoryService categoryService;
     private ProductService productService;
 
     public AdminController(CategoryService categoryService, ProductService productService) {
@@ -217,6 +217,7 @@ public class AdminController {
                 oldProduct.setDescription(product.getDescription());
                 oldProduct.setPrice(product.getPrice());
                 oldProduct.setCategory(product.getCategory());
+                oldProduct.setActive(product.isActive());
                 oldProduct.setStock(product.getStock());
                 oldProduct.setImageName(imageNameOld);
                 oldProduct.setDiscount(product.getDiscount());
