@@ -138,5 +138,5 @@ Contributions are welcome!
 ## 👨‍💻 Author
 
 **Mrityunjay Kumar**
-- 🌐 [GitHub](https://github.com/your-username)
-- 💼 [LinkedIn](https://www.linkedin.com/in/your-profile)  
+- 🌐 [GitHub](https://github.com/mrityunjay0)
+- 💼 [LinkedIn](https://www.linkedin.com/in/mrityunjay555/)  
