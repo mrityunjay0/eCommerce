@@ -21,11 +21,12 @@ public class User {
     private String phone;
     private String password;
     private String profileImage;
+    private String role;
 
     public User() {
     }
 
-    public User(int id, String name, String email, String address, String city, String state, String pincode, String phone, String password, String profileImage) {
+    public User(int id, String name, String email, String address, String city, String state, String pincode, String phone, String password, String profileImage, String role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -36,6 +37,7 @@ public class User {
         this.phone = phone;
         this.password = password;
         this.profileImage = profileImage;
+        this.role = role;
     }
 
     public int getId() {
@@ -116,5 +118,13 @@ public class User {
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
