@@ -47,6 +47,11 @@
 
                             <div class="row shadow p-3 mb-5 bg-body-tertiary rounded">
 
+                                <div class="col-12 text-center text-muted"
+                                     th:if="${#lists.isEmpty(products)}">
+                                    <p class="fs-5">No products available in this category.</p>
+                                </div>
+
                                 <div class="col-md-3" th:each="prod : ${products}">
                                     <div class="card">
                                         <div class="card-body text-center">
@@ -65,79 +70,13 @@
                                     </div>
                                 </div>
 
-<!--                                <div class="col-md-3">-->
-<!--                                    <div class="card">-->
-<!--                                        <div class="card-body text-center">-->
-<!--                                            <img src="/img/product_img/tab.jpeg" alt="Laptop"-->
-<!--                                                 height="150px" width="100%">-->
-<!--                                            <p class="fs-5 text-center">iPad</p>-->
-<!--                                            <div class="row text-center">-->
-<!--                                                <p class="fs-6 fw-bold">-->
-<!--                                                    &#8377;49999-->
-<!--                                                    <span class="fs-6 text-success">15% off</span>-->
-<!--                                                </p>-->
-<!--                                                <a class="btn btn-primary col-md-8 offset-md-2">View Details</a>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-
-<!--                                <div class="col-md-3">-->
-<!--                                    <div class="card">-->
-<!--                                        <div class="card-body text-center">-->
-<!--                                            <img src="/img/product_img/watch.jpeg" alt="Laptop"-->
-<!--                                                 height="150px" width="100%">-->
-<!--                                            <p class="fs-5 text-center">Watch</p>-->
-<!--                                            <div class="row text-center">-->
-<!--                                                <p class="fs-6 fw-bold">-->
-<!--                                                    &#8377;12999-->
-<!--                                                    <span class="fs-6 text-success">2% off</span>-->
-<!--                                                </p>-->
-<!--                                                <a class="btn btn-primary col-md-8 offset-md-2">View Details</a>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-
-<!--                                <div class="col-md-3">-->
-<!--                                    <div class="card">-->
-<!--                                        <div class="card-body text-center">-->
-<!--                                            <img src="/img/product_img/headphones.jpeg" alt="Laptop"-->
-<!--                                                 height="150px" width="100%">-->
-<!--                                            <p class="fs-5 text-center">Headphones</p>-->
-<!--                                            <div class="row text-center">-->
-<!--                                                <p class="fs-6 fw-bold">-->
-<!--                                                    &#8377;4999-->
-<!--                                                    <span class="fs-6 text-success">20% off</span>-->
-<!--                                                </p>-->
-<!--                                                <a class="btn btn-primary col-md-8 offset-md-2">View Details</a>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-
-<!--                                <div class="col-md-3">-->
-<!--                                    <div class="card">-->
-<!--                                        <div class="card-body text-center">-->
-<!--                                            <img src="/img/product_img/smartphone.jpeg" alt="Laptop"-->
-<!--                                                 height="150px" width="100%">-->
-<!--                                            <p class="fs-5 text-center">Smartphones</p>-->
-<!--                                            <div class="row text-center">-->
-<!--                                                <p class="fs-6 fw-bold">-->
-<!--                                                    &#8377;34999-->
-<!--                                                    <span class="fs-6 text-success">10% off</span>-->
-<!--                                                </p>-->
-<!--                                                <a class="btn btn-primary col-md-8 offset-md-2">View Details</a>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
 
                             </div>
 
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
