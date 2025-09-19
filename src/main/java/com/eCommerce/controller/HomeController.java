@@ -1,22 +1,30 @@
 package com.eCommerce.controller;
 
+import com.eCommerce.entity.User;
 import com.eCommerce.service.CategoryService;
 import com.eCommerce.service.ProductService;
+import com.eCommerce.service.UserService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 public class HomeController {
 
     private CategoryService categoryService;
     private ProductService productService;
+    private UserService userService;
 
-    public HomeController(CategoryService categoryService, ProductService productService) {
+    public HomeController(CategoryService categoryService, ProductService productService, UserService userService) {
         this.categoryService = categoryService;
         this.productService = productService;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -45,9 +53,43 @@ public class HomeController {
         return "products"; // Returns the view name "products"
     }
 
+
+    // Displays the product details page for a specific product by its ID
     @GetMapping("/viewDetails/{id}")
     public String product(@PathVariable int id, Model m) {
         m.addAttribute("product", productService.getProductById(id)); // Adds the product details to the model
         return "viewProduct"; // Returns the view name "viewProduct"
+    }
+
+
+    // Handles user registration and saves the user details along with the profile image
+    @PostMapping("/saveUser")
+    public String saveUser(@ModelAttribute User user, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
+
+        if (userService.existsByPhone(user.getPhone())) {
+            session.setAttribute("errorMsg", "User with this phone number already exists!");
+            return "redirect:/register";
+        }
+
+        String imageName = file!=null ? file.getOriginalFilename() : "No image";
+        user.setProfileImage(imageName); // Set the profile image name
+
+
+            User savedUser = userService.saveUser(user); // Save the user details
+
+            if(savedUser==null){
+                session.setAttribute("errorMsg", "Something went wrong!! User not added.");
+            }
+            else{
+
+                File saveFile = new ClassPathResource("static/img/profile_img").getFile();
+                File file1 = new File(saveFile.getAbsolutePath()+File.separator+imageName);
+                file.transferTo(file1); // Save the profile image to the specified directory
+
+                session.setAttribute("successMsg", "User added successfully.");
+            }
+
+        return "redirect:/register"; // Redirects to the register page
+
     }
 }

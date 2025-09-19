@@ -16,9 +16,24 @@
                     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
                         <div class="card-header">
                             <p class="fs-4 text-center">Register</p>
+
+                            <div th:if="${session.successMsg}" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                                 role="alert" style="z-index: 2000;">
+                                [[${session.successMsg}]]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            </div>
+
+                            <div th:if="${session.errorMsg}" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                                 role="alert" style="z-index: 2000;">
+                                [[${session.errorMsg}]]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            </div>
+
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form action="/saveUser" method="post" enctype="multipart/form-data">
 
                                 <div class="row">
                                     <div class="col">
@@ -27,7 +42,7 @@
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Mobile Number</label>
-                                        <input type="number" class="form-control" name="mobileNumber" required>
+                                        <input type="number" class="form-control" name="phone" required>
                                     </div>
                                 </div>
 
@@ -63,15 +78,15 @@
                                         <label class="form-label">Password</label>
                                         <input type="password" class="form-control" name="password" required>
                                     </div>
-                                    <div class="col">
-                                        <label class="form-label">Confirm Password</label>
-                                        <input type="password" class="form-control" name="cPassword" required>
-                                    </div>
+<!--                                    <div class="col">-->
+<!--                                        <label class="form-label">Confirm Password</label>-->
+<!--                                        <input type="password" class="form-control" name="cPassword" required>-->
+<!--                                    </div>-->
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Profile Image</label>
-                                    <input type="file" class="form-control" name="profile_image" required>
+                                    <input type="file" class="form-control" name="file" required>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary w-100">Register</button>
