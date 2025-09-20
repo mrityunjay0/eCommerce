@@ -43,6 +43,9 @@ public class AdminController {
             user.setName("Guest");
         }
         m.addAttribute("user", user);
+
+        List<Category> categories = categoryService.getAllActiveCategories();
+        m.addAttribute("categories", categories);
     }
 
 

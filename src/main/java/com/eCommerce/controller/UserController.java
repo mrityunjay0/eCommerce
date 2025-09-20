@@ -1,5 +1,6 @@
 package com.eCommerce.controller;
 
+import com.eCommerce.entity.Category;
 import com.eCommerce.entity.User;
 import com.eCommerce.service.CategoryService;
 import com.eCommerce.service.ProductService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -37,10 +39,13 @@ public class UserController {
             user.setName("Guest");
         }
         m.addAttribute("user", user);
+
+        List<Category> categories = categoryService.getAllActiveCategories();
+        m.addAttribute("categories", categories);
     }
 
     @GetMapping("/home")
     public String home() {
-        return "user/home"; // Returns the view name "home"
+        return "home"; // Returns the view name "home"
     }
 }

@@ -1,5 +1,6 @@
 package com.eCommerce.controller;
 
+import com.eCommerce.entity.Category;
 import com.eCommerce.entity.User;
 import com.eCommerce.service.CategoryService;
 import com.eCommerce.service.ProductService;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class HomeController {
@@ -39,6 +41,9 @@ public class HomeController {
             user.setName("Guest");
         }
         m.addAttribute("user", user);
+
+        List<Category> categories = categoryService.getAllActiveCategories();
+        m.addAttribute("categories", categories);
     }
 
 
