@@ -44,16 +44,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/signin")
                         .loginProcessingUrl("/login")
-                        .successHandler((request, response, authentication) -> {
-                            // Check roles and redirect accordingly
-                            boolean isAdmin = authentication.getAuthorities().stream()
-                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-                            if (isAdmin) {
-                                response.sendRedirect("/admin/");
-                            } else {
-                                response.sendRedirect("/user/home");
-                            }
-                        })
+                        .successHandler(new AuthSuccessHandlerImpl())
                         .permitAll()
                 )
                 .logout(logout -> logout.permitAll());

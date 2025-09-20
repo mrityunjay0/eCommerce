@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 
 @Controller
 public class HomeController {
@@ -26,6 +27,20 @@ public class HomeController {
         this.productService = productService;
         this.userService = userService;
     }
+
+    @ModelAttribute
+    public void getUserDetails(Principal p, Model m) {
+        User user = null;
+        if (p != null) {
+            user = userService.getUserByEmail(p.getName());
+        }
+        if (user == null) {
+            user = new User();
+            user.setName("Guest");
+        }
+        m.addAttribute("user", user);
+    }
+
 
     @GetMapping("/")
     public String home() {

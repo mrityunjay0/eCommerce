@@ -81,19 +81,34 @@
             </ul>
 
             <ul class="navbar-nav mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/signin">
-                        <i class="fa-solid fa-right-to-bracket"></i> Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/register"
-                    ><i class="fa-solid fa-user-plus"></i
-                    > Register</a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/admin/">Admin</a>
-                </li>
+
+                <th:block th:if="${user?.name == 'Guest'}">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/signin">
+                            <i class="fa-solid fa-right-to-bracket"></i> Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/register"
+                        ><i class="fa-solid fa-user-plus"></i
+                        > Register</a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/admin/">Admin</a>
+                    </li>
+                </th:block>
+
+                <th:block th:if="${user?.name != 'Guest'}">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/admin/">[[${user.name}]]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-danger btn-sm rounded-pill ms-2" href="/logout">
+                            Logout <i class="fa-solid fa-right-from-bracket"></i>
+                        </a>
+                    </li>
+                </th:block>
+
             </ul>
         </div>
     </div>
