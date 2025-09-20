@@ -55,8 +55,8 @@
                                 <div class="col-md-3" th:each="prod : ${products}">
                                     <div class="card">
                                         <div class="card-body text-center">
-                                            <img th:src="@{'/img/product_img/'+${prod.imageName}}" alt="img"
-                                                 height="150px" width="100%">
+                                            <img th:src="@{/img/product_img/{file}(file=${#strings.trim(prod.imageName)})}"
+                                                 alt="img" height="150" width="100%">
                                             <p class="fs-5 text-center">[[${prod.title}]]</p>
                                             <div class="row text-center">
                                                 <p class="fs-6">
@@ -79,6 +79,7 @@
 
             </div>
         </div>
+
     </section>
 </body>
 </html>

@@ -12,7 +12,7 @@
             <div class="col-md-12 p-5">
                 <div class="row">
                     <div class="col-md-6">
-                        <img src="/img/product_img/laptop.jpeg" alt="Laptop"
+                        <img th:src="@{/img/product_img/{file}(file=${#strings.trim(product.imageName)})}" alt="Laptop"
                              height="350" width="350px">
                     </div>
 
