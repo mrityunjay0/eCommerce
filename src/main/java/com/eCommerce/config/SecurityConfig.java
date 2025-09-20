@@ -12,20 +12,22 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    private UserDetailsService userDetailsService;
+
+    public SecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public UserDetailsService userDetailService(){
-        return new UserDetailsServiceImpl();
-    }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailService());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
@@ -34,13 +36,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable())
-                .authorizeHttpRequests(req -> req.requestMatchers("/user/**").hasRole("USER")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/**").permitAll())
-                .formLogin(form -> form.loginPage("/signin")
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/**").permitAll()
+                )
+                .formLogin(form -> form
+                        .loginPage("/signin")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/")
-                        .permitAll())
+                        .successHandler((request, response, authentication) -> {
+                            // Check roles and redirect accordingly
+                            boolean isAdmin = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                            if (isAdmin) {
+                                response.sendRedirect("/admin/");
+                            } else {
+                                response.sendRedirect("/user/home");
+                            }
+                        })
+                        .permitAll()
+                )
                 .logout(logout -> logout.permitAll());
 
         return http.build();
