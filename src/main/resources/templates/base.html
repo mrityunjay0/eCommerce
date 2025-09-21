@@ -159,5 +159,23 @@
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
 ></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                alert.classList.remove('show'); // Start fade out
+                alert.classList.add('fade');
+
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            }, 4000);
+        });
+    });
+</script>
+
 </body>
 </html>
