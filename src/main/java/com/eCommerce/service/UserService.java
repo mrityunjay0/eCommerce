@@ -8,6 +8,8 @@ public interface UserService {
 
     public User saveUser(User user);
 
+    public User updateUserStatus(User user);
+
     boolean existsByPhone(String phone);
 
     public User getUserByEmail(String email);

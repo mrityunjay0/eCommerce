@@ -29,6 +29,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updateUserStatus(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public boolean existsByPhone(String phone) {
         return userRepository.existsByPhone(phone);
     }

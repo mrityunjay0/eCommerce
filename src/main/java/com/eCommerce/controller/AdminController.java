@@ -274,18 +274,25 @@ public class AdminController {
     }
 
 
-    @GetMapping("/updateUserStatus/{id}")
-    public String updateUserStatus(@PathVariable int id, HttpSession session) {
+    @PostMapping("/updateUserStatus/{id}")
+    public String updateUserStatus(@PathVariable Integer id, HttpSession session) {
 
         User user = userService.getUserById(id);
+
         if (user != null) {
-            user.setEnabled(!user.isEnabled()); // Toggle the user's enabled status
-            userService.saveUser(user); // Save the updated user
+            if(user.isEnabled()){
+                user.setEnabled(false);
+            }
+            else{
+                user.setEnabled(true);
+            }
+            userService.updateUserStatus(user); // Update the user's status
             String status = user.isEnabled() ? "enabled" : "disabled";
             session.setAttribute("successMsg", "User " + status + " successfully.");
         } else {
             session.setAttribute("errorMsg", "User not found.");
         }
+
         return "redirect:/admin/viewUsers"; // Redirects to the viewUsers page after updating the status
     }
 }

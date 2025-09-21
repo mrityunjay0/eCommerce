@@ -46,7 +46,6 @@
                     </div>
 
                 </form>
-
             </div>
 
 
@@ -77,12 +76,52 @@
                         <td class="text-center">[[${user.isEnabled}]]</td>
                         <td class="text-center">
 
-                            <a th:href="@{'/admin/updateUserStatus/'+${user.id}}"
-                               class="btn btn-sm btn-primary"><i class="fa-solid fa-pen-to-square">
-                            </i>Active</a>
+<!--                            <a th:href="@{'/admin/updateUserStatus/'+${user.id}}"-->
+<!--                               class="btn btn-sm btn-primary"><i class="fa-solid fa-pen-to-square">-->
+<!--                            </i>Active</a>-->
 
-                            <a th:href="@{'/admin/updateUserStatus/'+${user.id}}" class="btn btn-sm btn-danger">
-                                <i class="fa-solid fa-trash"></i>Inactive</a>
+<!--                            <a th:href="@{'/admin/updateUserStatus/'+${user.id}}" class="btn btn-sm btn-danger">-->
+<!--                                <i class="fa-solid fa-trash"></i>Inactive</a>-->
+
+<!--                            <a th:if="${!user.enabled}"-->
+<!--                               th:href="@{'/admin/updateUserStatus/'+${user.id}}"-->
+<!--                               class="btn btn-sm btn-success"-->
+<!--                               th:onclick="event.preventDefault(); document.getElementById('toggle-[[${user.id}]]').submit();">-->
+<!--                                <i class="fa-solid fa-check"></i> Activate-->
+<!--                            </a>-->
+
+<!--                            &lt;!&ndash; Deactivate button when enabled &ndash;&gt;-->
+<!--                            <a th:if="${user.enabled}"-->
+<!--                               th:href="@{'/admin/updateUserStatus/'+${user.id}}"-->
+<!--                               class="btn btn-sm btn-danger"-->
+<!--                               th:onclick="event.preventDefault(); document.getElementById('toggle-[[${user.id}]]').submit();">-->
+<!--                                <i class="fa-solid fa-ban"></i> Deactivate-->
+<!--                            </a>-->
+
+<!--                            <form th:id="'toggle-'+${user.id}"-->
+<!--                                  th:href="@{'/admin/updateUserStatus/'+${user.id}}"-->
+<!--                                  method="post" style="display:none;">-->
+<!--                                &lt;!&ndash; Guard to avoid evaluating when _csrf is null &ndash;&gt;-->
+<!--                                <th:block th:if="${_csrf != null}">-->
+<!--                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+<!--                                </th:block>-->
+<!--                            </form>-->
+
+
+                            <form th:action="@{/admin/updateUserStatus/{id}(id=${user.id})}"
+                                  method="post" style="display:inline;">
+                                <th:block th:if="${_csrf != null}">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                </th:block>
+
+                                <button th:if="${!user.enabled}" class="btn btn-sm btn-success" type="submit">
+                                    <i class="fa-solid fa-check"></i> Activate
+                                </button>
+
+                                <button th:if="${user.enabled}" class="btn btn-sm btn-danger" type="submit">
+                                    <i class="fa-solid fa-ban"></i> Deactivate
+                                </button>
+                            </form>
 
                         </td>
                     </tr>
