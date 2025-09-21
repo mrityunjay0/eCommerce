@@ -72,69 +72,83 @@
                 </li>
             </ul>
 
-            <ul class="navbar-nav mb-2 mb-lg-0">
-
-                <th:block th:if="${user?.name == 'Guest'}">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/signin">
-                            <i class="fa-solid fa-right-to-bracket"></i> Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/register"
-                        ><i class="fa-solid fa-user-plus"></i
-                        > Register</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/admin/">Admin</a>
-                    </li>
-                </th:block>
-
-                <th:block th:if="${user?.name != 'Admin' and user?.name != 'Guest'}">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <!-- Guest -->
+                <th:block th:if="${user == null or user.name == 'Guest'}">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+                        <a class="nav-link dropdown-toggle" href="#" id="guestMenu" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            [[${user.name}]]
+                            Guest
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><hr class="dropdown-divider" /></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="guestMenu">
+                            <li><a class="dropdown-item" href="/signin"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+                            <li><a class="dropdown-item" href="/register"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+                            <li><a class="dropdown-item" href="/admin/"><i class="fa-solid fa-user-shield"></i> Admin</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="btn btn-danger btn-sm rounded-pill ms-2" href="/logout">
-                            Logout <i class="fa-solid fa-right-from-bracket"></i>
-                        </a>
-                    </li>
                 </th:block>
 
-                <th:block th:if="${user?.name == 'Admin'}">
+                <!-- Logged-in non-admin -->
+                <th:block th:if="${user != null and user.name != 'Guest' and user.name != 'Admin'}">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+                        <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            [[${user.name}]]
+                            <!-- Profile image -->
+                            <img th:src="@{'/img/profile_img/' + ${user.profileImage}}"
+                                 alt="Profile"
+                                 class="rounded-circle me-2"
+                                 style="width:30px; height:30px; object-fit:cover;">
+                            <span>[[${user.name}]]</span>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><hr class="dropdown-divider" /></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                            <li>
+                            <!-- POST logout is recommended -->
+                                <form th:action="@{/logout}" method="post" class="px-3 py-1">
+                                    <input type="hidden" th:if="${_csrf != null}"
+                                           th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100">
+                                        Logout <i class="fa-solid fa-right-from-bracket"></i>
+                                    </button>
+                                </form>
+                            <li>
+<!--                            <a class="dropdown-item" href="/logout">-->
+<!--                                <i class="btn btn-danger btn-sm rounded-pill ms-2"></i> Logout</a>-->
+<!--                            </li>-->
+
+                            </li>
                         </ul>
                     </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/admin/">
-                            <i class="fa-solid fa-user-shield"></i> Admin Panel</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="btn btn-danger btn-sm rounded-pill ms-2" href="/logout">
-                            Logout <i class="fa-solid fa-right-from-bracket"></i>
-                        </a>
-                    </li>
                 </th:block>
 
+                <!-- Admin -->
+                <th:block th:if="${user != null and user.name == 'Admin'}">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminMenu" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <!-- Profile image -->
+                            <img th:src="@{'/img/profile_img/' + ${user.profileImage}}"
+                                 alt="Profile"
+                                 class="rounded-circle me-2"
+                                 style="width:30px; height:30px; object-fit:cover;">
+                            <span>[[${user.name}]]</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminMenu">
+                            <li><a class="dropdown-item" href="/admin/"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="px-3 py-1">
+                                    <input type="hidden" th:if="${_csrf != null}"
+                                           th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100">
+                                        Logout <i class="fa-solid fa-right-from-bracket"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </th:block>
             </ul>
+
         </div>
     </div>
 </nav>
