@@ -22,11 +22,12 @@ public class User {
     private String password;
     private String profileImage;
     private String role;
+    private boolean isEnabled;
 
     public User() {
     }
 
-    public User(int id, String name, String email, String address, String city, String state, String pincode, String phone, String password, String profileImage, String role) {
+    public User(int id, String name, String email, String address, String city, String state, String pincode, String phone, String password, String profileImage, String role, boolean isEnabled) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -38,6 +39,7 @@ public class User {
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
+        this.isEnabled = isEnabled;
     }
 
     public int getId() {
@@ -126,5 +128,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 }

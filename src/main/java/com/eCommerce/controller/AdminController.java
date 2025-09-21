@@ -263,4 +263,29 @@ public class AdminController {
 
         return "redirect:/admin/viewProducts"; // Redirects to the viewProducts page after updating
     }
+
+
+    // Displays the list of all users with the role "ROLE_USER"
+    @GetMapping("/viewUsers")
+    public String viewUsers(Model m) {
+        List<User> users = userService.getAllUsersByRole("ROLE_USER"); // Fetches all users with the role "ROLE_ADMIN"
+        m.addAttribute("users", users); // Adds the list of users to the model
+        return "admin/users"; // Returns the view name "admin/viewUsers"
+    }
+
+
+    @GetMapping("/updateUserStatus/{id}")
+    public String updateUserStatus(@PathVariable int id, HttpSession session) {
+
+        User user = userService.getUserById(id);
+        if (user != null) {
+            user.setEnabled(!user.isEnabled()); // Toggle the user's enabled status
+            userService.saveUser(user); // Save the updated user
+            String status = user.isEnabled() ? "enabled" : "disabled";
+            session.setAttribute("successMsg", "User " + status + " successfully.");
+        } else {
+            session.setAttribute("errorMsg", "User not found.");
+        }
+        return "redirect:/admin/viewUsers"; // Redirects to the viewUsers page after updating the status
+    }
 }

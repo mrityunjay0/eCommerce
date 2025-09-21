@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>All Products</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid mt-4 p-3">
+        <div class="row">
+            <p class="text-center fs-3 mt-2">All Users</p>
+            <hr>
+            <a href="/admin/" class="text-decoration-none"><i
+                    class="fa-solid fa-arrow-left"></i> Back</a>
+
+
+            <!--SUCCESS MESSAGE-->
+            <div th:if="${session.successMsg}" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                 role="alert" style="z-index: 2000;">
+                [[${session.successMsg}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+            </div>
+
+            <!--ERROR MESSAGE-->
+            <div th:if="${session.errorMsg}" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                 role="alert" style="z-index: 2000;">
+                [[${session.errorMsg}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+            </div>
+
+
+            <div class="col-md-4 p-3">
+
+                <form action="/admin/searchProducts" method="get">
+
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" class="form-control " name="ch" placeholder="Search here...">
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary col">Search</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!--             <div class="card card-sh">-->
+            <div class="p-3">
+                <table class="table table-bordered">
+                    <thead class="table-light ">
+                    <tr>
+                        <th class="text-center" scope="col">Sl No</th>
+                        <th class="text-center" scope="col">Profile</th>
+                        <th class="text-center" scope="col">Name</th>
+                        <th class="text-center" scope="col">Email</th>
+                        <th class="text-center" scope="col">Phone</th>
+                        <th class="text-center" scope="col">Address</th>
+                        <th class="text-center" scope="col">Status</th>
+                        <th class="text-center" scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user,c:${users}">
+                        <th class="text-center" scope="row">[[${c.count}]]</th>
+                        <td class="text-center"><img th:src="@{'/img/profile_img/'+${user.profileImage}}"
+                                                     width="70px" height="70px" alt="image"></td>
+                        <td class="text-center">[[${user.name}]]</td>
+                        <td class="text-center">[[${user.email}]]</td>
+                        <td class="text-center">[[${user.phone}]]</td>
+                        <td class="text-center">[[${user.address+','+user.city+','+user.state+','+user.pincode}]]</td>
+                        <td class="text-center">[[${user.isEnabled}]]</td>
+                        <td class="text-center">
+
+                            <a th:href="@{'/admin/updateUserStatus/'+${user.id}}"
+                               class="btn btn-sm btn-primary"><i class="fa-solid fa-pen-to-square">
+                            </i>Active</a>
+
+                            <a th:href="@{'/admin/updateUserStatus/'+${user.id}}" class="btn btn-sm btn-danger">
+                                <i class="fa-solid fa-trash"></i>Inactive</a>
+
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <!--                <div class="row">-->
+                <!--                    <div class="col-md-4">Total Product : [[${totalElements}]]</div>-->
+                <!--                    <div class="col-md-6">-->
+
+                <!--                        <nav aria-label="Page navigation example">-->
+                <!--                            <ul class="pagination">-->
+                <!--                                <li class="page-item"-->
+                <!--                                    th:classappend="${isFirst} ? 'disabled':''"><a-->
+                <!--                                        class="page-link"-->
+                <!--                                        th:href="@{'/admin/products?pageNo='+${pageNo-1}}"-->
+                <!--                                        aria-label="Previous"> <span aria-hidden="true">&laquo;</span>-->
+                <!--                                </a></li>-->
+
+                <!--                                <li th:each="i:${#numbers.sequence(1,totalPages)}"-->
+                <!--                                    class="page-item" th:classappend="${pageNo+1==i}?'active':''"-->
+                <!--                                    ]]><a class="page-link"-->
+                <!--                                          th:href="@{'/admin/products?pageNo='+${i-1}}">[[${i}]]</a></li>-->
+
+                <!--                                <li class="page-item"-->
+                <!--                                    th:classappend="${isLast} ? 'disabled':''"><a-->
+                <!--                                        class="page-link"-->
+                <!--                                        th:href="@{'/admin/products?pageNo='+${pageNo+1}}"-->
+                <!--                                        aria-label="Next"> <span aria-hidden="true">&raquo;</span>-->
+                <!--                                </a></li>-->
+                <!--                            </ul>-->
+                <!--                        </nav>-->
+                <!--                    </div>-->
+
+                <!--                </div>-->
+            </div>
+        </div>
+    </div>
+    <!-- 	</div> -->
+</section>
+</body>
+</html>
