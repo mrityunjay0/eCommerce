@@ -5,6 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import javax.xml.crypto.Data;
+import java.util.Date;
+
 @Entity
 public class User {
 
@@ -23,11 +26,16 @@ public class User {
     private String profileImage;
     private String role;
     private boolean isEnabled;
+    private Boolean accountNonLocked;
+    private Integer failedAttempt;
+    private Date lockTime;
 
     public User() {
     }
 
-    public User(int id, String name, String email, String address, String city, String state, String pincode, String phone, String password, String profileImage, String role, boolean isEnabled) {
+    public User(int id, String name, String email, String address, String city, String state, String pincode,
+                String phone, String password, String profileImage, String role, boolean isEnabled,
+                Boolean accountNonLocked, Integer failedAttempt, Date lockTime) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -40,6 +48,9 @@ public class User {
         this.profileImage = profileImage;
         this.role = role;
         this.isEnabled = isEnabled;
+        this.accountNonLocked = accountNonLocked;
+        this.failedAttempt = failedAttempt;
+        this.lockTime = lockTime;
     }
 
     public int getId() {
@@ -136,5 +147,29 @@ public class User {
 
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
+    }
+
+    public Boolean getAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    public void setAccountNonLocked(Boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public Integer getFailedAttempt() {
+        return failedAttempt;
+    }
+
+    public void setFailedAttempt(Integer failedAttempt) {
+        this.failedAttempt = failedAttempt;
+    }
+
+    public Date getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(Date lockTime) {
+        this.lockTime = lockTime;
     }
 }

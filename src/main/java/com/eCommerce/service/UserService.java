@@ -19,4 +19,12 @@ public interface UserService {
     public List<User> getAllUsersByRole(String role);
 
     public User getUserById(int id);
+
+    public void increaseFailedAttempts(User user);
+
+    public void resetFailedAttempts(int id);
+
+    public void userAccountLock(User user);
+
+    public boolean unlockWhenTimeExpired(User user);
 }

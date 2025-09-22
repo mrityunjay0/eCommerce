@@ -12,10 +12,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
+    private final AuthFailureHandlerImpl authFailureHandler;
+    private final AuthSuccessHandlerImpl authSuccessHandler;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService,
+                          AuthFailureHandlerImpl authFailureHandler,
+                          AuthSuccessHandlerImpl authSuccessHandler) {
         this.userDetailsService = userDetailsService;
+        this.authFailureHandler = authFailureHandler;
+        this.authSuccessHandler = authSuccessHandler;
     }
 
     @Bean
@@ -48,7 +54,8 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/signin")
                         .loginProcessingUrl("/login")
-                        .successHandler(new AuthSuccessHandlerImpl())
+                        .failureHandler(authFailureHandler)
+                        .successHandler(authSuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout.permitAll());
