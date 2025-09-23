@@ -1,23 +1,26 @@
+
 # 🛍️ E-Commerce Web Application (Under Development)
 
 A full-stack **E-Commerce application** built using **Spring Boot, Spring Data JPA, Thymeleaf, Bootstrap, and MySQL**.  
-This project is **currently under development** 🚧. New features like cart, checkout are being implemented.
+This project is **currently under development** 🚧. New features like cart and checkout are in progress.
 
 ---
 
 ## **Features**
+
 ### 👥 User Features
 - User registration and login
 - Browse products by category
 - View product details
 - Secure authentication with Spring Security
+- **Forgot Password & Reset Password** using secure email link
 
 ### 🛠️ Admin Features
 - Add, update, delete products
 - Manage categories
 - Enable/disable user accounts
 - View all registered users
-- Admin dashboard with product management
+- Admin dashboard for product and user management
 
 ---
 
@@ -38,6 +41,8 @@ git clone https://github.com/mrityunjay0/eCommerce.git
 cd eCommerce
 ```
 
+---
+
 ### 2. Configure the Database
 - Create a MySQL database, for example: `eCommerce_db`.
 - Update the `application.properties` file with your database credentials:
@@ -48,17 +53,42 @@ cd eCommerce
   spring.jpa.hibernate.ddl-auto=update
   ```
 
-### 3. Build the Project
+---
+
+### 3. Configure Mail Service (For Forgot Password)
+To enable the Forgot Password feature, configure **Gmail SMTP**:
+
+```properties
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=your_email@gmail.com
+spring.mail.password=your_app_password  # Use Gmail App Password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+```
+
+> ⚠️ **Note:**
+> - You must enable 2-Step Verification on your Gmail account and generate an **App Password**.
+> - The email configured above will be used to send password reset links.
+
+---
+
+### 4. Build the Project
 ```bash
 mvn clean install
 ```
 
-### 4. Run the Application
+---
+
+### 5. Run the Application
 ```bash
 mvn spring-boot:run
 ```
 
-### 5. Access the Application
+---
+
+### 6. Access the Application
 - **Frontend:** `http://localhost:8080`
 - **Admin Dashboard:** `http://localhost:8080/admin/`
 
@@ -75,30 +105,32 @@ Password: Admin Password
 ```
 com.eCommerce
  ┣ 📂 config
- ┃ ┣ 📄 SecurityConfig.java           # Main Spring Security configuration
+ ┃ ┣ 📄 SecurityConfig.java           # Spring Security configuration
  ┃ ┣ 📄 CustomUser.java                # Custom UserDetails implementation
  ┃ ┣ 📄 UserDetailsServiceImpl.java    # Loads user-specific data for authentication
+ ┃ ┣ 📄 AuthFailureHandlerImpl.java    # Custom authentication failure handler
  ┃ ┗ 📄 AuthSuccessHandlerImpl.java    # Custom authentication success handler
  ┃
  ┣ 📂 controller
- ┃ ┣ 📄 AdminController.java           # Handles admin-specific routes and actions
- ┃ ┗ 📄 HomeController.java            # Handles public and user-facing pages
+ ┃ ┣ 📄 AdminController.java           # Admin actions and routes
+ ┃ ┣ 📄 UserController.java            # User actions and routes
+ ┃ ┗ 📄 HomeController.java            # Public & user-facing pages, Forgot/Reset Password
  ┃
  ┣ 📂 entity
- ┃ ┣ 📄 Category.java                  # Entity representing product categories
- ┃ ┣ 📄 Product.java                   # Entity representing products
- ┃ ┗ 📄 User.java                      # Entity representing application users
+ ┃ ┣ 📄 Category.java                  # Product categories
+ ┃ ┣ 📄 Product.java                   # Products
+ ┃ ┗ 📄 User.java                      # Users
  ┃
  ┣ 📂 repository
- ┃ ┣ 📄 CategoryRepository.java        # JPA repository for Category entity
- ┃ ┣ 📄 ProductRepository.java         # JPA repository for Product entity
- ┃ ┗ 📄 UserRepository.java            # JPA repository for User entity
+ ┃ ┣ 📄 CategoryRepository.java        # JPA repository for Category
+ ┃ ┣ 📄 ProductRepository.java         # JPA repository for Product
+ ┃ ┗ 📄 UserRepository.java            # JPA repository for User
  ┃
  ┣ 📂 service
- ┃ ┣ 📄 CategoryService.java           # Service interface for Category operations
- ┃ ┣ 📄 ProductService.java            # Service interface for Product operations
- ┃ ┣ 📄 UserService.java               # Service interface for User management
- ┃ ┗ 📄 CommonService.java             # Generic service (e.g., session handling)
+ ┃ ┣ 📄 CategoryService.java           # Category business logic
+ ┃ ┣ 📄 ProductService.java            # Product business logic
+ ┃ ┣ 📄 UserService.java               # User management logic
+ ┃ ┗ 📄 CommonService.java             # Generic helper service
  ┃
  ┣ 📂 serviceImpl
  ┃ ┣ 📄 CategoryServiceImpl.java       # Implementation of CategoryService
@@ -106,68 +138,68 @@ com.eCommerce
  ┃ ┣ 📄 UserServiceImpl.java           # Implementation of UserService
  ┃ ┗ 📄 CommonServiceImpl.java         # Implementation of CommonService
  ┃
- ┣ 📄 ECommerceApplication.java        # Main Spring Boot application starter class
+ ┣ 📂 utils
+ ┃ ┣ 📄 AppConstant.java               # App contant variables
+ ┃ ┗ 📄 CommonUtils.java               # Utility class for email sending, URL generation
+ ┃
+ ┣ 📄 ECommerceApplication.java        # Spring Boot starter class
  ┃
  ┣ 📂 resources
- ┃ ┣ 📂 static                          # Static frontend resources
- ┃ │   ┣ 📂 css                         # Stylesheets
- ┃ │   ┣ 📂 js                          # JavaScript files
- ┃ │   ┗ 📂 img                         # Images (product, category, profile)
+ ┃ ┣ 📂 static                          # Static files
+ ┃ │   ┣ 📂 css
+ ┃ │   ┣ 📂 js
+ ┃ │   ┗ 📂 img
  ┃ │       ├── product_img/
  ┃ │       ├── profile_img/
  ┃ │       └── category_img/
  ┃ │
- ┃ ┗ 📂 templates                       # Thymeleaf templates for UI
- ┃     ┣ 📂 admin
- ┃     │   ┣ 📄 addCategory.html        # Form to add a new category
- ┃     │   ┣ 📄 addProduct.html         # Form to add a new product
- ┃     │   ┣ 📄 editCategory.html       # Form to edit an existing category
- ┃     │   ┣ 📄 editProduct.html        # Form to edit an existing product
- ┃     │   ┣ 📄 index.html              # Admin dashboard
- ┃     │   ┗ 📄 viewProducts.html       # Page to list all products for admin
+ ┃ ┗ 📂 templates
+ ┃     ┣ 📂 admin                       # Admin pages
+ ┃     │   ┣ 📄 addCategory.html
+ ┃     │   ┣ 📄 addProduct.html
+ ┃     │   ┣ 📄 editCategory.html
+ ┃     │   ┣ 📄 editProduct.html
+ ┃     │   ┣ 📄 index.html
+ ┃     │   ┣ 📄 users.html
+ ┃     │   ┗ 📄 viewProducts.html
  ┃     │
- ┃     ┣ 📄 base.html                   # Common layout template
- ┃     ┣ 📄 home.html                   # Homepage for users
+ ┃     ┣ 📄 base.html                   # Common layout
+ ┃     ┣ 📄 errorMessage.html           # Shows error messages while resetting password
+ ┃     ┣ 📄 home.html                   # Homepage
  ┃     ┣ 📄 login.html                  # Login page
- ┃     ┣ 📄 products.html               # Product listing page for customers
- ┃     ┣ 📄 register.html               # User registration page
- ┃     ┗ 📄 viewProduct.html            # Product details page for customers
+ ┃     ┣ 📄 register.html               # Registration page
+ ┃     ┣ 📄 products.html               # Product listing
+ ┃     ┣ 📄 forgotPassword.html         # Forgot password page
+ ┃     ┣ 📄 resetPassword.html          # Reset password page (with token)
+ ┃     ┗ 📄 viewProduct.html            # Product details
 ```
+
+---
+
+## **New Forgot Password Flow**
+The following is how the reset password process works:
+1. **User clicks "Forgot Password"** on the login page.
+2. Enters their registered email.
+3. Application generates a **secure token** and stores it in the database.
+4. User receives an **email with a reset link**.
+5. User clicks the link → Reset Password form loads with token.
+6. User enters new password and confirms it.
+7. On success, token is cleared and the password is updated.
 
 ---
 
 ## 🚧 Current Status
 
-This project is **in progress**. Upcoming features include:
+The project is **under development**.  
+Upcoming features include:
 - Shopping cart and checkout
 - Payment gateway integration
 - Product reviews and ratings
 - Order tracking system
----
-
-## 🤝 Contributing
-
-Contributions are welcome!
-
-1. Fork the repository
-2. Create your feature branch:
-   ```bash
-   git checkout -b feature/YourFeature
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m "Add new feature"
-   ```
-4. Push to the branch:
-   ```bash
-   git push origin feature/YourFeature
-   ```
-5. Open a Pull Request
 
 ---
 
-## 👨‍💻 Author
-
-**Mrityunjay Kumar**
+## 📧 Contact
+**Author:** Mrityunjay Kumar
 - 🌐 [GitHub](https://github.com/mrityunjay0)
 - 💼 [LinkedIn](https://www.linkedin.com/in/mrityunjay555/)  

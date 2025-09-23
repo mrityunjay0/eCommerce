@@ -30,3 +30,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore Spring Boot application properties
+src/main/resources/application.properties
+src/main/resources/application.yml
+
+# Optional: Ignore environment variable files
+.env
+.env.*
