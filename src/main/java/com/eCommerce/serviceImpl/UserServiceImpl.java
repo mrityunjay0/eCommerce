@@ -39,6 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updateUserPassword(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public boolean existsByPhone(String phone) {
         return userRepository.existsByPhone(phone);
     }
@@ -95,6 +100,18 @@ public class UserServiceImpl implements UserService {
         }
 
         return false;
+    }
+
+    @Override
+    public void updateResetToken(String email, String resetToken) {
+        User user = userRepository.findByEmail(email);
+        user.setResetToken(resetToken);
+        userRepository.save(user);
+    }
+
+    @Override
+    public User getUserByResetToken(String resetToken) {
+        return userRepository.findByResetToken(resetToken);
     }
 
     @Override

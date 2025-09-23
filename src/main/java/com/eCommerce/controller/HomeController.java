@@ -5,8 +5,13 @@ import com.eCommerce.entity.User;
 import com.eCommerce.service.CategoryService;
 import com.eCommerce.service.ProductService;
 import com.eCommerce.service.UserService;
+import com.eCommerce.utils.CommonUtils;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class HomeController {
@@ -23,11 +30,16 @@ public class HomeController {
     private CategoryService categoryService;
     private ProductService productService;
     private UserService userService;
+    private CommonUtils commonUtils;
+    private PasswordEncoder passwordEncoder;
 
-    public HomeController(CategoryService categoryService, ProductService productService, UserService userService) {
+    public HomeController(CategoryService categoryService, ProductService productService, UserService userService,
+                          CommonUtils commonUtils, PasswordEncoder passwordEncoder) {
         this.categoryService = categoryService;
         this.productService = productService;
         this.userService = userService;
+        this.commonUtils = commonUtils;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @ModelAttribute
@@ -47,16 +59,19 @@ public class HomeController {
     }
 
 
+    // Displays the home page
     @GetMapping("/")
     public String home() {
         return "home"; // Returns the view name "home"
     }
 
+    // Handles the login page request
     @GetMapping("/signin")
     public String login(){
         return "login"; // Returns the view name "login"
     }
 
+    // Handles the registration page request
     @GetMapping("/register")
     public String register(){
         return "register"; // Returns the view name "register"
@@ -111,5 +126,83 @@ public class HomeController {
 
         return "redirect:/register"; // Redirects to the register page
 
+    }
+
+
+    // Handles the forgot password request
+    @GetMapping("/forgotPassword")
+    public String forgotPassword(){
+        return "forgotPassword"; // Redirects to the forgotPassword page
+    }
+
+
+    // Handles the forgot password logic
+    @PostMapping("/forgotPassword")
+    public String processForgotPassword(@RequestParam String email, HttpSession session, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+
+        User user = userService.getUserByEmail(email);
+        if(user==null){
+            session.setAttribute("errorMsg","Invalid email.");
+        }
+        else{
+
+            String resetToken = UUID.randomUUID().toString();
+            userService.updateResetToken(email,resetToken);
+
+            String url = CommonUtils.generateUrl(request) + "/resetPassword?token=" + resetToken;
+
+            boolean sendMail = commonUtils.sendMail(url,email);
+            if(sendMail){
+                session.setAttribute("successMsg","Reset link sent.");
+            }
+            else {
+                session.setAttribute("errorMsg","Error occurred, link not sent.");
+            }
+        }
+
+        return "redirect:/forgotPassword";
+    }
+
+
+    // Handles the reset password request
+    @GetMapping("/resetPassword")
+    public String resetPassword(@RequestParam(required = false) String token, Model m) {
+        if (token == null) {
+            m.addAttribute("errorMsg", "Missing reset token. Please use the link sent to your email.");
+            return "errorMessage";
+        }
+        User user = userService.getUserByResetToken(token);
+        if (user == null) {
+            m.addAttribute("errorMsg","Invalid or expired link.");
+            return "errorMessage";
+        }
+        m.addAttribute("token", token);
+        return "resetPassword";
+    }
+
+
+    // Excute the reset password request
+    @PostMapping("/resetPasswordExecute")
+    public String resetPasswordExecute(@RequestParam String token, @RequestParam String password,
+                                       @RequestParam String confirmPassword, HttpSession session, Model m) {
+
+        if (!password.equals(confirmPassword)) {
+            m.addAttribute("errorMsg", "Passwords do not match.");
+            m.addAttribute("token", token);           // keep token so the form can post again
+            return "resetPassword";
+        }
+
+        User user = userService.getUserByResetToken(token);
+        if (user == null) {
+            m.addAttribute("errorMsg", "Invalid or expired link.");
+            return "errorMessage";
+        }
+
+        user.setPassword(passwordEncoder.encode(password));
+        user.setResetToken(null);
+        userService.updateUserPassword(user);
+
+        session.setAttribute("successMsg","Password changed successfully");
+        return "redirect:/signin"; // or Option B with token
     }
 }

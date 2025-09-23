@@ -29,13 +29,14 @@ public class User {
     private Boolean accountNonLocked;
     private Integer failedAttempt;
     private Date lockTime;
+    private String resetToken;
 
     public User() {
     }
 
     public User(int id, String name, String email, String address, String city, String state, String pincode,
                 String phone, String password, String profileImage, String role, boolean isEnabled,
-                Boolean accountNonLocked, Integer failedAttempt, Date lockTime) {
+                Boolean accountNonLocked, Integer failedAttempt, Date lockTime, String resetToken) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -51,6 +52,7 @@ public class User {
         this.accountNonLocked = accountNonLocked;
         this.failedAttempt = failedAttempt;
         this.lockTime = lockTime;
+        this.resetToken = resetToken;
     }
 
     public int getId() {
@@ -171,5 +173,13 @@ public class User {
 
     public void setLockTime(Date lockTime) {
         this.lockTime = lockTime;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
     }
 }
