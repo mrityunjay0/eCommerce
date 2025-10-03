@@ -62,9 +62,19 @@
                         </div>
 
                         <th:block>
-                            <span th:if="${product.stock > 0}">
-                                <a href="/signin" class="btn btn-success col-md-12">Add To Cart</a>
-                            </span>
+                            <th:block th:if="${user==null}">
+                                <span th:if="${product.stock > 0}">
+                                    <a href="/signin" class="btn btn-success col-md-12">Add To Cart</a>
+                                </span>
+                            </th:block>
+                            <th:block th:if="${user!=null}">
+                                <span th:if="${product.stock > 0}">
+                                    <a th:href="@{'/addCart?pid='+${product.id}+'&uid='+${user.id}}" class="btn btn-success col-md-12">Add To Cart</a>
+                                </span>
+                            </th:block>
+                        </th:block>
+
+                        <th:block>
                             <span th:if="${product.stock == 0}">
                                 <a href="#" class="btn text-white btn-danger col-md-12">Out of Stock</a>
                             </span>

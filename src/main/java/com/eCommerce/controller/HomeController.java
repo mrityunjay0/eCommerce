@@ -47,12 +47,13 @@ public class HomeController {
         User user = null;
         if (p != null) {
             user = userService.getUserByEmail(p.getName());
+            m.addAttribute("user", user);
         }
-        if (user == null) {
-            user = new User();
-            user.setName("Guest");
-        }
-        m.addAttribute("user", user);
+//        if (user == null) {
+//            user = new User();
+//            user.setName("Guest");
+//        }
+//        m.addAttribute("user", user);
 
         List<Category> categories = categoryService.getAllActiveCategories();
         m.addAttribute("categories", categories);
