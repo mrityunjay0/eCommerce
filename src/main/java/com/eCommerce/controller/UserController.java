@@ -45,6 +45,8 @@ public class UserController {
             user.setName("Guest");
         }
         m.addAttribute("user", user);
+        Integer cartCount = cartService.getCartCount(user.getId());
+        m.addAttribute("cartCount", cartCount);
 
         List<Category> categories = categoryService.getAllActiveCategories();
         m.addAttribute("categories", categories);

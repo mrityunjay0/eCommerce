@@ -2,6 +2,7 @@ package com.eCommerce.controller;
 
 import com.eCommerce.entity.Category;
 import com.eCommerce.entity.User;
+import com.eCommerce.service.CartService;
 import com.eCommerce.service.CategoryService;
 import com.eCommerce.service.ProductService;
 import com.eCommerce.service.UserService;
@@ -10,7 +11,6 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,14 +32,16 @@ public class HomeController {
     private UserService userService;
     private CommonUtils commonUtils;
     private PasswordEncoder passwordEncoder;
+    private CartService cartService;
 
     public HomeController(CategoryService categoryService, ProductService productService, UserService userService,
-                          CommonUtils commonUtils, PasswordEncoder passwordEncoder) {
+                          CommonUtils commonUtils, PasswordEncoder passwordEncoder, CartService cartService) {
         this.categoryService = categoryService;
         this.productService = productService;
         this.userService = userService;
         this.commonUtils = commonUtils;
         this.passwordEncoder = passwordEncoder;
+        this.cartService = cartService;
     }
 
     @ModelAttribute
@@ -48,13 +50,9 @@ public class HomeController {
         if (p != null) {
             user = userService.getUserByEmail(p.getName());
             m.addAttribute("user", user);
+            Integer cartCount = cartService.getCartCount(user.getId());
+            m.addAttribute("cartCount",cartCount);
         }
-//        if (user == null) {
-//            user = new User();
-//            user.setName("Guest");
-//        }
-//        m.addAttribute("user", user);
-
         List<Category> categories = categoryService.getAllActiveCategories();
         m.addAttribute("categories", categories);
     }

@@ -101,6 +101,15 @@
                             <span>[[${user.name}]]</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+
+                            <li>
+                                <a class="dropdown-item" th:href="@{/user/cart}">
+                                    <i class="fa-solid fa-cart-shopping"></i> My Cart
+                                    <span class="badge bg-secondary ms-2" th:text="${cartCount}">0</span>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+
                             <li>
                             <!-- POST logout is recommended -->
                                 <form th:action="@{/logout}" method="post" class="px-3 py-1">
