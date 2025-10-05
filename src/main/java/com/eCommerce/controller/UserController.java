@@ -1,10 +1,13 @@
 package com.eCommerce.controller;
 
+import com.eCommerce.entity.Cart;
 import com.eCommerce.entity.Category;
 import com.eCommerce.entity.User;
+import com.eCommerce.service.CartService;
 import com.eCommerce.service.CategoryService;
 import com.eCommerce.service.ProductService;
 import com.eCommerce.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +25,13 @@ public class UserController {
     private CategoryService categoryService;
     private ProductService productService;
     private UserService userService;
+    private CartService cartService;
 
-    public UserController(CategoryService categoryService, ProductService productService, UserService userService) {
+    public UserController(CategoryService categoryService, ProductService productService, UserService userService, CartService cartService) {
         this.categoryService = categoryService;
         this.productService = productService;
         this.userService = userService;
+        this.cartService = cartService;
     }
 
     @ModelAttribute
@@ -52,8 +57,15 @@ public class UserController {
 
 
     @GetMapping("/addCart")
-    public String addToCart(@RequestParam Integer pid, @RequestParam Integer uid){
+    public String addToCart(@RequestParam Integer pid, @RequestParam Integer uid, HttpSession session){
 
-        return "redirect:/viewProduct" + pid;
+        Cart saveCart = cartService.saveCart(pid,uid);
+        if(saveCart == null){
+            session.setAttribute("errorMsg","Failed to add cart, try again!!!");
+        }
+        else{
+            session.setAttribute("successMsg","Added to cart!!!");
+        }
+        return "redirect:/viewDetails/" + pid;
     }
 }

@@ -10,6 +10,23 @@
 
         <div class="container card-sh mt-5 p-3">
             <div class="col-md-12 p-5">
+
+                <!-- SUCCESS MESSAGE -->
+                <div th:if="${session.successMsg}" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                     role="alert" style="z-index: 2000;">
+                    [[${session.successMsg}]]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </div>
+
+                <!-- ERROR MESSAGE -->
+                <div th:if="${session.errorMsg}" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                     role="alert" style="z-index: 2000;">
+                    [[${session.errorMsg}]]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </div>
+
                 <div class="row">
                     <div class="col-md-6">
                         <img th:src="@{/img/product_img/{file}(file=${#strings.trim(product.imageName)})}" alt="Laptop"
@@ -69,7 +86,7 @@
                             </th:block>
                             <th:block th:if="${user!=null}">
                                 <span th:if="${product.stock > 0}">
-                                    <a th:href="@{'/addCart?pid='+${product.id}+'&uid='+${user.id}}" class="btn btn-success col-md-12">Add To Cart</a>
+                                    <a th:href="@{'/user/addCart?pid='+${product.id}+'&uid='+${user.id}}" class="btn btn-success col-md-12">Add To Cart</a>
                                 </span>
                             </th:block>
                         </th:block>
