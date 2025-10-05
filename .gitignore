@@ -31,9 +31,14 @@ build/
 ### VS Code ###
 .vscode/
 
-# Spring Boot configs (ignore all profiles)
-src/main/resources/application*.properties
-src/main/resources/application*.yml
+# Ignore app configs anywhere (root or in resources)
+application*.properties
+application*.yml
+**/application*.properties
+**/application*.yml
+
+# If you specifically want to ignore only the root file too:
+#/application.properties
 
 # Optional: Ignore environment variable files
 .env
