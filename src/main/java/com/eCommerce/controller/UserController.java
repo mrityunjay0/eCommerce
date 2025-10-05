@@ -70,4 +70,22 @@ public class UserController {
         }
         return "redirect:/viewDetails/" + pid;
     }
+
+
+    @GetMapping("/cart")
+    public String cartPage(Principal p, Model m){
+
+        User user = getLoggedInUserDetails(p);
+        List<Cart> carts = cartService.getCartByUser(user.getId());
+        m.addAttribute("carts", carts);
+        m.addAttribute("totalOrderPrice", carts.get(carts.size()-1).getTotalOrderPrice());
+        return "cart";
+    }
+
+    public User getLoggedInUserDetails(Principal p) {
+
+        String email = p.getName();
+        User user = userService.getUserByEmail(email);
+        return user;
+    }
 }

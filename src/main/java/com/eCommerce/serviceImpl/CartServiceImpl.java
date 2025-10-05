@@ -9,6 +9,7 @@ import com.eCommerce.repository.UserRepository;
 import com.eCommerce.service.CartService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,7 +50,19 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<Cart> getCartByUser(Integer userId) {
-        return List.of();
+        List<Cart> carts = cartRepository.findByUserId(userId);
+
+        Double totalOrderPrice = 0.0;
+
+        List<Cart> updateCart = new ArrayList<>();
+        for(Cart c : carts){
+            Double totalPrice = (double) (c.getProduct().getDiscountPrice() * c.getQuantity());
+            c.setTotalPrice(totalPrice);
+            totalOrderPrice += totalPrice;
+            c.setTotalOrderPrice(totalOrderPrice);
+            updateCart.add(c);
+        }
+        return updateCart;
     }
 
     @Override

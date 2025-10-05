@@ -1,71 +1,68 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+    <meta charset="ISO-8859-1">
+    <title>Cart</title>
 </head>
 <body>
 <section>
-    <div class="container mt-5 p-5">
+    <div class="container-fluid mt-4 p-3">
         <div class="row">
-            <div class="col-md-6 p-5">
-                <img src="/img/ecom.png" alt="Login Image" width="100%" height="400px">
+            <p class="text-center fs-3 mt-4">Cart</p>
+            <hr>
+
+            <!--SUCCESS MESSAGE-->
+            <div th:if="${session.successMsg}" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                 role="alert" style="z-index: 2000;">
+                [[${session.successMsg}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
             </div>
-            <div class="col-md-6 mt-5 p-5">
-                <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-                    <div class="card-header">
-                        <p class="fs-4 text-center">Login</p>
 
-                        <div th:if="${param.error}"
-                             class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
-                             role="alert" style="z-index: 2000;">
-                            [[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
-                        </div>
+            <!--ERROR MESSAGE-->
+            <div th:if="${session.errorMsg}" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                 role="alert" style="z-index: 2000;">
+                [[${session.errorMsg}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+            </div>
 
-                        <div th:if="${param.logout}"
-                             class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
-                             role="alert" style="z-index: 2000;">
-                            You have been logged out successfully.
-                        </div>
 
-                        <!-- SUCCESS ALERT -->
-                        <div th:if="${session.successMsg}"
-                             class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
-                             role="alert" style="z-index: 2000;">
-                            [[${session.successMsg}]]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            <!-- Clear the message from session after displaying -->
-                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-                        </div>
+            <div class="p-3">
+                <div class="card shadow-lg border-0 rounded-3 p-3"> <!-- ? Adds soft shadow and rounded edges -->
+                    <table class="table table-borderless align-middle"> <!-- ? Removes lines -->
+                        <thead class="table-light shadow-sm">
+                        <tr>
+                            <th class="text-center">Sl No</th>
+                            <th class="text-center">Image</th>
+                            <th class="text-center">Product Name</th>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Total Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="cart, c : ${carts}" class="border-bottom">
+                            <td class="text-center fw-semibold">[[${c.count}]]</td>
+                            <td class="text-center">
+                                <img th:src="@{'/img/product_img/'+${cart.product.imageName}}"
+                                     width="70" height="70" alt="image"
+                                     class="img-thumbnail border-0 shadow-sm rounded-2">
+                            </td>
+                            <td class="text-center">[[${cart.product.title}]]</td>
+                            <td class="text-center">[[${cart.product.discountPrice}]]</td>
+                            <td class="text-center">[[${cart.quantity}]]</td>
+                            <td class="text-center fw-bold">[[${cart.totalPrice}]]</td>
+                        </tr>
 
-                        <!-- ERROR ALERT -->
-                        <div th:if="${session.errorMsg}"
-                             class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
-                             role="alert" style="z-index: 2000;">
-                            [[${session.errorMsg}]]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            <!-- Clear the message from session after displaying -->
-                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-                        </div>
-
-                    </div>
-                    <div class="card-body">
-                        <form action="/login" method="post">
-                            <div class="mb-3">
-                                <label class="form-label">Username</label>
-                                <input type="email" class="form-control" name="username" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Login</button>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="/forgotPassword" class="text-decoration-none">Forget Password</a>
-                        <p>Don't have an account? <a href="/register" class="text-decoration-none">Register</a></p>
-                    </div>
+                        <tr class="table-light">
+                            <td colspan="4"></td>
+                            <td class="fw-bold text-end">Order Amount:</td>
+                            <td class="fw-bold">[[${totalOrderPrice}]]</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
