@@ -83,7 +83,7 @@ public class UserController {
             m.addAttribute("carts", Collections.emptyList());
             m.addAttribute("totalOrderPrice", 0.0);
             m.addAttribute("isEmpty", true);
-            return "cart";
+            return "/user/cart";
         }
 
         List<Cart> carts = cartService.getCartByUser(user.getId());
@@ -101,12 +101,21 @@ public class UserController {
         // If instead each Cart line has its own line total, switch to:
         // double totalOrderPrice = carts.stream().mapToDouble(Cart::getLineTotal).sum();
 
-        return "cart";
+        return "/user/cart";
     }
     public User getLoggedInUserDetails(Principal p) {
 
         String email = p.getName();
         User user = userService.getUserByEmail(email);
         return user;
+    }
+
+
+    @GetMapping("cartQuantityUpdate")
+    public String cartQuantityUpdate(@RequestParam String sy, @RequestParam Integer cid){
+
+        cartService.cartQuantityUpdate(sy,cid);
+
+        return "redirect:/user/cart";
     }
 }

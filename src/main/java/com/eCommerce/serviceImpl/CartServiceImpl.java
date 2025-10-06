@@ -7,10 +7,12 @@ import com.eCommerce.repository.CartRepository;
 import com.eCommerce.repository.ProductRepository;
 import com.eCommerce.repository.UserRepository;
 import com.eCommerce.service.CartService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -69,5 +71,40 @@ public class CartServiceImpl implements CartService {
     public Integer getCartCount(Integer userId) {
 
         return cartRepository.countByUserId(userId);
+    }
+
+    @Transactional
+    @Override
+    public Boolean cartQuantityUpdate(String sy, Integer cid) {
+
+        Cart cart = cartRepository.findById(cid).orElse(null);
+
+        if (cart == null) return false; // already deleted or invalid id
+
+        if ("inc".equals(sy)) {
+            int q = cart.getQuantity() + 1;
+            cart.setQuantity(q);
+            cart.setTotalPrice(q * cart.getProduct().getDiscountPrice());
+            cartRepository.saveAndFlush(cart);
+            return true;
+
+        }
+        else if ("dec".equals(sy)) {
+            int q = cart.getQuantity();
+            if (q > 1) {
+                q--;
+                cart.setQuantity(q);
+                cart.setTotalPrice(q * cart.getProduct().getDiscountPrice());
+                cartRepository.saveAndFlush(cart);
+            }
+            else {
+                // qty == 1 → delete; DO NOT save this entity again after delete
+                cartRepository.delete(cart);
+                cartRepository.flush(); // ensure delete hits DB inside TX
+            }
+            return true;
+        }
+
+        return false;
     }
 }
