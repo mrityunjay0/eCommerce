@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -73,15 +74,35 @@ public class UserController {
 
 
     @GetMapping("/cart")
-    public String cartPage(Principal p, Model m){
+    public String cartPage(Principal p, Model m) {
 
         User user = getLoggedInUserDetails(p);
+
+        if (user == null) {
+            // Not logged in → show empty cart gracefully
+            m.addAttribute("carts", Collections.emptyList());
+            m.addAttribute("totalOrderPrice", 0.0);
+            m.addAttribute("isEmpty", true);
+            return "cart";
+        }
+
         List<Cart> carts = cartService.getCartByUser(user.getId());
+        if (carts == null) carts = Collections.emptyList();
+
         m.addAttribute("carts", carts);
-        m.addAttribute("totalOrderPrice", carts.get(carts.size()-1).getTotalOrderPrice());
+        m.addAttribute("isEmpty", carts.isEmpty());
+
+        // If your design stores grand total on the last Cart row:
+        double totalOrderPrice = carts.isEmpty()
+                ? 0.0
+                : carts.get(carts.size() - 1).getTotalOrderPrice();
+        m.addAttribute("totalOrderPrice", totalOrderPrice);
+
+        // If instead each Cart line has its own line total, switch to:
+        // double totalOrderPrice = carts.stream().mapToDouble(Cart::getLineTotal).sum();
+
         return "cart";
     }
-
     public User getLoggedInUserDetails(Principal p) {
 
         String email = p.getName();

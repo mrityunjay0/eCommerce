@@ -30,40 +30,48 @@
 
 
             <div class="p-3">
-                <div class="card shadow-lg border-0 rounded-3 p-3"> <!-- ? Adds soft shadow and rounded edges -->
-                    <table class="table table-borderless align-middle"> <!-- ? Removes lines -->
-                        <thead class="table-light shadow-sm">
-                        <tr>
-                            <th class="text-center">Sl No</th>
-                            <th class="text-center">Image</th>
-                            <th class="text-center">Product Name</th>
-                            <th class="text-center">Price</th>
-                            <th class="text-center">Quantity</th>
-                            <th class="text-center">Total Price</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="cart, c : ${carts}" class="border-bottom">
-                            <td class="text-center fw-semibold">[[${c.count}]]</td>
-                            <td class="text-center">
-                                <img th:src="@{'/img/product_img/'+${cart.product.imageName}}"
-                                     width="70" height="70" alt="image"
-                                     class="img-thumbnail border-0 shadow-sm rounded-2">
-                            </td>
-                            <td class="text-center">[[${cart.product.title}]]</td>
-                            <td class="text-center">[[${cart.product.discountPrice}]]</td>
-                            <td class="text-center">[[${cart.quantity}]]</td>
-                            <td class="text-center fw-bold">[[${cart.totalPrice}]]</td>
-                        </tr>
+                <div th:if="${!isEmpty}" class="card shadow-lg border-0 rounded-3 p-3"> <!-- ? Adds soft shadow and rounded edges -->
+                    <!--  Show only when cart has items -->
+                        <table class="table table-borderless align-middle">
+                            <thead class="table-light shadow-sm">
+                            <tr>
+                                <th class="text-center">Sl No</th>
+                                <th class="text-center">Image</th>
+                                <th class="text-center">Product Name</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-center">Total Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cart, c : ${carts}" class="border-bottom">
+                                <td class="text-center fw-semibold">[[${c.count}]]</td>
+                                <td class="text-center">
+                                    <img th:src="@{'/img/product_img/'+${cart.product.imageName}}"
+                                         width="70" height="70" alt="image"
+                                         class="img-thumbnail border-0 shadow-sm rounded-2">
+                                </td>
+                                <td class="text-center">[[${cart.product.title}]]</td>
+                                <td class="text-center">[[${cart.product.discountPrice}]]</td>
+                                <td class="text-center">[[${cart.quantity}]]</td>
+                                <td class="text-center fw-bold">[[${cart.totalPrice}]]</td>
+                            </tr>
 
-                        <tr class="table-light">
-                            <td colspan="4"></td>
-                            <td class="fw-bold text-end">Order Amount:</td>
-                            <td class="fw-bold">[[${totalOrderPrice}]]</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                            <tr class="table-light">
+                                <td colspan="4"></td>
+                                <td class="fw-bold text-end">Order Amount:</td>
+                                <td class="fw-bold">[[${totalOrderPrice}]]</td>
+                            </tr>
+                            </tbody>
+                        </table>
                 </div>
+
+                <!--  When cart IS empty -->
+                <div th:if="${isEmpty}" class="text-center py-5">
+                    <h4 class="text-muted"><i class="fa-solid fa-cart-shopping"></i> Your cart is empty.</h4>
+                    <a th:href="@{/}" class="btn btn-primary mt-3">Continue Shopping</a>
+                </div>
+
             </div>
         </div>
     </div>
