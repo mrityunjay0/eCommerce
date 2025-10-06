@@ -118,4 +118,11 @@ public class UserController {
 
         return "redirect:/user/cart";
     }
+
+
+    @GetMapping("/checkout")
+    public String checkoutPage() {
+
+        return "/user/checkout";
+    }
 }
