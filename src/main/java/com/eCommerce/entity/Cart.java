@@ -67,7 +67,7 @@ public class Cart {
         this.quantity = quantity;
     }
 
-    public Double getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 

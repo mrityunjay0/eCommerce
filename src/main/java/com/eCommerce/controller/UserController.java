@@ -2,18 +2,13 @@ package com.eCommerce.controller;
 
 import com.eCommerce.entity.Cart;
 import com.eCommerce.entity.Category;
+import com.eCommerce.entity.OrderRequest;
 import com.eCommerce.entity.User;
-import com.eCommerce.service.CartService;
-import com.eCommerce.service.CategoryService;
-import com.eCommerce.service.ProductService;
-import com.eCommerce.service.UserService;
+import com.eCommerce.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Collections;
@@ -27,12 +22,15 @@ public class UserController {
     private ProductService productService;
     private UserService userService;
     private CartService cartService;
+    private OrderService orderService;
 
-    public UserController(CategoryService categoryService, ProductService productService, UserService userService, CartService cartService) {
+    public UserController(CategoryService categoryService, ProductService productService,
+                          UserService userService, CartService cartService, OrderService orderService) {
         this.categoryService = categoryService;
         this.productService = productService;
         this.userService = userService;
         this.cartService = cartService;
+        this.orderService = orderService;
     }
 
     @ModelAttribute
@@ -121,8 +119,49 @@ public class UserController {
 
 
     @GetMapping("/checkout")
-    public String checkoutPage() {
+    public String checkoutPage(Principal p, Model m) {
 
-        return "/user/checkout";
+        User user = getLoggedInUserDetails(p);   // safe helper below
+
+        // If not logged in, render empty amounts gracefully
+        if (user == null) {
+            m.addAttribute("orderPrice", 0L);
+            m.addAttribute("deliveryFee", 250);
+            m.addAttribute("tax", 100);
+            m.addAttribute("totalOrderPrice", 250 + 100);
+            m.addAttribute("isEmpty", true);
+            m.addAttribute("carts", Collections.emptyList());
+            return "user/checkout"; // no leading slash
+        }
+
+        List<Cart> carts = cartService.getCartByUser(user.getId());
+        if (carts == null) carts = Collections.emptyList();
+
+        double orderPrice = carts.stream()
+                .mapToDouble(c -> c.getTotalPrice())  // ensure this is a number in your entity
+                .sum();
+
+        int deliveryFee = 250;
+        int tax = 100;
+        double totalOrderPrice = orderPrice + deliveryFee + tax;
+
+        m.addAttribute("carts", carts);
+        m.addAttribute("isEmpty", carts.isEmpty());
+        m.addAttribute("orderPrice", orderPrice);
+        m.addAttribute("deliveryFee", deliveryFee);
+        m.addAttribute("tax", tax);
+        m.addAttribute("totalOrderPrice", totalOrderPrice);
+
+        return "user/checkout";
+    }
+
+    @PostMapping("/placeOrder")
+    public String placeOrder(@ModelAttribute OrderRequest orderRequest, Principal p, HttpSession session) {
+
+        User user = getLoggedInUserDetails(p);
+        orderService.saveOrder(user.getId(), orderRequest);
+
+        session.setAttribute("successMsg", "Order placed successfully!");
+        return "redirect:/user/cart";
     }
 }

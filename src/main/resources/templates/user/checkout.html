@@ -9,7 +9,7 @@
 <section>
 
     <div class="container mt-5 p-5">
-        <form action="/user/save-order" method="post" id="orders" novalidate>
+        <form action="/user/placeOrder" method="post" id="orders">
             <div class="row">
 
                 <div class="col-md-6">
@@ -34,7 +34,7 @@
                                                         class="form-control col">
                         </div>
                         <div class="col p-1">
-                            <label>Mobile Number</label> <input type="text" name="mobileNo" required
+                            <label>Phone</label> <input type="text" name="phone" required
                                                                 class="form-control col ms-2">
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                                                         class="form-control col">
                         </div>
                         <div class="col p-1">
-                            <label>Pincode</label> <input type="number" name="pincode" required
+                            <label>Pincode</label> <input type="number" name="zipCode" required
                                                           class="form-control col ms-2">
                         </div>
                     </div>
@@ -102,8 +102,8 @@
                             <!-- <form action="/login" method="post"> -->
                             <div class="mb-3">
                                 <label class="form-label">Select Payment Type</label> <select required
-                                                                                              name="paymentType" class="form-control">
-                                <option value="">--select--</option>
+                                                                                              name="paymentMethod" class="form-control">
+                                <option value="" disabled selected hidden>Select Payment Method</option>
                                 <option value="COD">Cash On Delivery</option>
                                 <option value="ONLINE">Online Payment</option>
                             </select>

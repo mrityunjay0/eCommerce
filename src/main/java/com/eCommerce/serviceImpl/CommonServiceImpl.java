@@ -18,4 +18,9 @@ public class CommonServiceImpl implements CommonService {
         request.getSession().removeAttribute("errorMsg");
         request.getSession().removeAttribute("successMsg");
     }
+
+    @Override
+    public String rupeeSign() {
+        return "&#8377;";
+    }
 }

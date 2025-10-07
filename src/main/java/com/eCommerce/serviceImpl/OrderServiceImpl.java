@@ -1,13 +1,18 @@
 package com.eCommerce.serviceImpl;
 
 import com.eCommerce.entity.Cart;
+import com.eCommerce.entity.OrderAddress;
+import com.eCommerce.entity.OrderRequest;
 import com.eCommerce.entity.ProductOrder;
 import com.eCommerce.repository.CartRepository;
 import com.eCommerce.repository.ProductOrderRepository;
 import com.eCommerce.service.OrderService;
+import com.eCommerce.utils.OrderStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -21,8 +26,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ProductOrder saveOrder(Integer userId) {
+    public void saveOrder(Integer userId, OrderRequest orderRequest) {
+
         List<Cart> carts = cartRepository.findByUserId(userId);
-        
+
+        for(Cart c : carts) {
+            ProductOrder productOrder = new ProductOrder();
+
+            productOrder.setOrderId(UUID.randomUUID().toString());
+            productOrder.setOrderDate(new Date());
+            productOrder.setProduct(c.getProduct());
+            productOrder.setUser(c.getUser());
+            productOrder.setPrice(c.getProduct().getPrice());
+            productOrder.setQuantity(c.getQuantity());
+            productOrder.setStatus(OrderStatus.IN_PROGRESS.getDescription());
+            productOrder.setPaymentMethod(orderRequest.getPaymentMethod());
+
+            // Set order address
+
+            OrderAddress orderAddress = new OrderAddress();
+
+            orderAddress.setFirstName(orderRequest.getFirstName());
+            orderAddress.setLastName(orderRequest.getLastName());
+            orderAddress.setEmail(orderRequest.getEmail());
+            orderAddress.setPhone(orderRequest.getPhone());
+            orderAddress.setAddress(orderRequest.getAddress());
+            orderAddress.setCity(orderRequest.getCity());
+            orderAddress.setState(orderRequest.getState());
+            orderAddress.setZipCode(orderRequest.getZipCode());
+
+            productOrder.setOrderAddress(orderAddress);
+
+            productOrderRepository.save(productOrder);
+            cartRepository.deleteByUserId(userId);
+        }
     }
 }
