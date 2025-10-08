@@ -61,4 +61,26 @@ public class OrderServiceImpl implements OrderService {
             cartRepository.deleteByUserId(userId);
         }
     }
+
+    @Override
+    public List<ProductOrder> getOrdersByUser(Integer uid) {
+
+        return productOrderRepository.findByUserId(uid);
+    }
+
+    @Override
+    public String cancelOrder(Integer id, Integer st) {
+
+        ProductOrder order = productOrderRepository.findById(id).orElse(null);
+        if(order != null) {
+            if(st == 8) {
+                order.setStatus(OrderStatus.CANCELLED.getDescription());
+            } else if(st == 9) {
+                order.setStatus(OrderStatus.CANCELLED.getDescription());
+            }
+            productOrderRepository.save(order);
+            return "Order cancelled successfully!";
+        }
+        return "Order not found!";
+    }
 }

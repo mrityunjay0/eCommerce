@@ -1,9 +1,6 @@
 package com.eCommerce.controller;
 
-import com.eCommerce.entity.Cart;
-import com.eCommerce.entity.Category;
-import com.eCommerce.entity.OrderRequest;
-import com.eCommerce.entity.User;
+import com.eCommerce.entity.*;
 import com.eCommerce.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -33,6 +30,7 @@ public class UserController {
         this.orderService = orderService;
     }
 
+    // To get user details and cart count in the header
     @ModelAttribute
     public void getUserDetails(Principal p, Model m) {
         User user = null;
@@ -57,6 +55,7 @@ public class UserController {
     }
 
 
+    // Add to cart
     @GetMapping("/addCart")
     public String addToCart(@RequestParam Integer pid, @RequestParam Integer uid, HttpSession session){
 
@@ -71,6 +70,7 @@ public class UserController {
     }
 
 
+    // View cart page
     @GetMapping("/cart")
     public String cartPage(Principal p, Model m) {
 
@@ -101,6 +101,9 @@ public class UserController {
 
         return "/user/cart";
     }
+
+
+    // Safe helper to get logged-in user details
     public User getLoggedInUserDetails(Principal p) {
 
         String email = p.getName();
@@ -109,6 +112,7 @@ public class UserController {
     }
 
 
+    // Update cart quantity
     @GetMapping("cartQuantityUpdate")
     public String cartQuantityUpdate(@RequestParam String sy, @RequestParam Integer cid){
 
@@ -118,6 +122,7 @@ public class UserController {
     }
 
 
+    // Checkout page
     @GetMapping("/checkout")
     public String checkoutPage(Principal p, Model m) {
 
@@ -155,6 +160,8 @@ public class UserController {
         return "user/checkout";
     }
 
+
+    // Place order
     @PostMapping("/placeOrder")
     public String placeOrder(@ModelAttribute OrderRequest orderRequest, Principal p, HttpSession session) {
 
@@ -162,6 +169,36 @@ public class UserController {
         orderService.saveOrder(user.getId(), orderRequest);
 
         session.setAttribute("successMsg", "Order placed successfully!");
-        return "redirect:/user/cart";
+        return "user/success";
+    }
+
+
+    // View user's past orders
+    @GetMapping("/myOrders")
+    public String myOrders(Principal p, Model m) {
+
+        User user = getLoggedInUserDetails(p);
+        if (user == null) {
+            m.addAttribute("orders", Collections.emptyList());
+            m.addAttribute("isEmpty", true);
+            return "user/myOrders";
+        }
+
+        List<ProductOrder> orders = orderService.getOrdersByUser(user.getId());
+        if (orders == null) orders = Collections.emptyList();
+
+        m.addAttribute("orders", orders);
+        m.addAttribute("isEmpty", orders.isEmpty());
+
+        return "user/myOrders";
+    }
+
+
+    @GetMapping("/cancelOrder" )
+    public String cancelOrder(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
+
+        String msg = orderService.cancelOrder(id, st);
+        session.setAttribute("successMsg", msg);
+        return "redirect:/user/myOrders";
     }
 }
