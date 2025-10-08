@@ -193,7 +193,8 @@ public class UserController {
         return "user/myOrders";
     }
 
-
+    
+    // Cancel order
     @GetMapping("/cancelOrder" )
     public String cancelOrder(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
 
