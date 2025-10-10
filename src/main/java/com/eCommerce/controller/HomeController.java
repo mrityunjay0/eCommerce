@@ -46,13 +46,24 @@ public class HomeController {
 
     @ModelAttribute
     public void getUserDetails(Principal p, Model m) {
+
         User user = null;
+
         if (p != null) {
             user = userService.getUserByEmail(p.getName());
-            m.addAttribute("user", user);
-            Integer cartCount = cartService.getCartCount(user.getId());
-            m.addAttribute("cartCount",cartCount);
+            if (user != null) {
+                m.addAttribute("user", user);
+                Integer cartCount = cartService.getCartCount(user.getId());
+                m.addAttribute("cartCount", cartCount);
+            } else {
+                // principal present but user record not found (first run, empty DB, etc.)
+                m.addAttribute("cartCount", 0);
+            }
+        } else {
+            // not logged in
+            m.addAttribute("cartCount", 0);
         }
+
         List<Category> categories = categoryService.getAllActiveCategories();
         m.addAttribute("categories", categories);
     }

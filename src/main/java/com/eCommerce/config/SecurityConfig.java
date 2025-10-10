@@ -38,18 +38,17 @@ public class SecurityConfig {
         return daoAuthenticationProvider;
     }
 
+    // SecurityConfig.java
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable())
                 .authenticationProvider(authenticationProvider())
-                .authorizeHttpRequests(req -> req
-                        .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-
-                        .requestMatchers("/user/**").hasRole("USER")
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/css/**","/js/**","/img/**","/signin","/register","/","/products/**","/category/**").permitAll()
+                        .requestMatchers("/saveUser").permitAll() // permit the registration POST
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/user/**").hasRole("USER")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/signin")
