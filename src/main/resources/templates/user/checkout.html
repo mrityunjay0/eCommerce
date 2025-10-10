@@ -9,7 +9,7 @@
 <section>
 
     <div class="container mt-5 p-5">
-        <form action="/user/placeOrder" method="post" id="orders">
+        <form onsubmit="this.querySelector('button[type=submit]').disabled = true;" action="/user/placeOrder" method="post" id="orders">
             <div class="row">
 
                 <div class="col-md-6">

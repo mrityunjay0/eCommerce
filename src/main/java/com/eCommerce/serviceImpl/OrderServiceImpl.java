@@ -10,6 +10,7 @@ import com.eCommerce.service.OrderService;
 import com.eCommerce.utils.OrderStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -26,9 +27,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void saveOrder(Integer userId, OrderRequest orderRequest) {
+    public List<ProductOrder> saveOrder(Integer userId, OrderRequest orderRequest) {
 
         List<Cart> carts = cartRepository.findByUserId(userId);
+        List<ProductOrder> created = new ArrayList<>();
 
         for(Cart c : carts) {
             ProductOrder productOrder = new ProductOrder();
@@ -57,9 +59,10 @@ public class OrderServiceImpl implements OrderService {
 
             productOrder.setOrderAddress(orderAddress);
 
-            productOrderRepository.save(productOrder);
-            cartRepository.deleteByUserId(userId);
+            created.add(productOrderRepository.save(productOrder));
         }
+        cartRepository.deleteByUserId(userId);
+        return created;
     }
 
     @Override

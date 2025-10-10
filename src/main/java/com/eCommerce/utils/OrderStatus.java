@@ -9,7 +9,8 @@ public enum OrderStatus {
     SHIPPED(5, "Shipped"),
     OUT_FOR_DELIVERY(6, "Out for Delivery"),
     DELIVERED(7, "Delivered"),
-    CANCELLED(8, "Cancelled");
+    CANCELLED(8, "Cancelled"),
+    SUCCESS(9, "Success");
 
     private final int id;
     private final String description;

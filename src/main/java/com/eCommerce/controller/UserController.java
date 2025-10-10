@@ -2,11 +2,14 @@ package com.eCommerce.controller;
 
 import com.eCommerce.entity.*;
 import com.eCommerce.service.*;
+import com.eCommerce.utils.CommonUtils;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
@@ -20,14 +23,17 @@ public class UserController {
     private UserService userService;
     private CartService cartService;
     private OrderService orderService;
+    private CommonUtils commonUtils;
 
     public UserController(CategoryService categoryService, ProductService productService,
-                          UserService userService, CartService cartService, OrderService orderService) {
+                          UserService userService, CartService cartService,
+                          OrderService orderService, CommonUtils commonUtils) {
         this.categoryService = categoryService;
         this.productService = productService;
         this.userService = userService;
         this.cartService = cartService;
         this.orderService = orderService;
+        this.commonUtils = commonUtils;
     }
 
     // To get user details and cart count in the header
@@ -163,12 +169,16 @@ public class UserController {
 
     // Place order
     @PostMapping("/placeOrder")
-    public String placeOrder(@ModelAttribute OrderRequest orderRequest, Principal p, HttpSession session) {
+    public String placeOrder(@ModelAttribute OrderRequest orderRequest, Principal p, HttpSession session) throws MessagingException, UnsupportedEncodingException {
 
         User user = getLoggedInUserDetails(p);
-        orderService.saveOrder(user.getId(), orderRequest);
+
+        List<ProductOrder> justCreated = orderService.saveOrder(user.getId(), orderRequest);
 
         session.setAttribute("successMsg", "Order placed successfully!");
+
+        commonUtils.sendOrderSummaryMail(justCreated);
+
         return "user/success";
     }
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    public void saveOrder(Integer userId, OrderRequest orderRequest);
+    List<ProductOrder> saveOrder(Integer userId, OrderRequest orderRequest);
 
     List<ProductOrder> getOrdersByUser(Integer uid);
 
