@@ -12,4 +12,8 @@ public interface OrderService {
     List<ProductOrder> getOrdersByUser(Integer uid);
 
     String cancelOrder(Integer id, Integer st);
+
+    List<ProductOrder> getAllOrders();
+
+    void updateOrderStatus(Integer orderId, String newStatus);
 }

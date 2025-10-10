@@ -2,8 +2,10 @@ package com.eCommerce.controller;
 
 import com.eCommerce.entity.Category;
 import com.eCommerce.entity.Product;
+import com.eCommerce.entity.ProductOrder;
 import com.eCommerce.entity.User;
 import com.eCommerce.service.CategoryService;
+import com.eCommerce.service.OrderService;
 import com.eCommerce.service.ProductService;
 import com.eCommerce.service.UserService;
 import org.springframework.core.io.ClassPathResource;
@@ -27,11 +29,14 @@ public class AdminController {
     private CategoryService categoryService;
     private ProductService productService;
     private UserService userService;
+    private OrderService orderService;
 
-    public AdminController(CategoryService categoryService, ProductService productService, UserService userService) {
+    public AdminController(CategoryService categoryService, ProductService productService,
+                           UserService userService, OrderService orderService) {
         this.categoryService = categoryService;
         this.productService = productService;
         this.userService = userService;
+        this.orderService = orderService;
     }
 
     @ModelAttribute
@@ -296,5 +301,58 @@ public class AdminController {
         }
 
         return "redirect:/admin/viewUsers"; // Redirects to the viewUsers page after updating the status
+    }
+
+
+    // Displays the orders page for the admin
+    @GetMapping("/orders")
+    public String viewOrders(Model m){
+
+        List<ProductOrder> orders = orderService.getAllOrders();
+        if (orders == null) orders = List.of();
+
+        m.addAttribute("orders", orders);
+        m.addAttribute("isEmpty", orders.isEmpty());
+
+        return "admin/orders";
+    }
+
+
+    // Updates the status of an order based on admin input
+    @PostMapping("/updateOrderStatus")
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer status, HttpSession session) {
+
+        try {
+            if (id == null || status == null) {
+                session.setAttribute("errorMsg", "Invalid request parameters.");
+                return "redirect:/admin/orders";
+            }
+
+            String newStatus = switch (status) {
+                case 1 -> "In Progress";
+                case 2 -> "Complete";
+                case 3 -> "Order Received";
+                case 4 -> "Packed";
+                case 5 -> "Shipped";
+                case 6 -> "Out for Delivery";
+                case 7 -> "Delivered";
+                case 8 -> "Cancelled";
+                default -> null;
+            };
+
+            if (newStatus == null) {
+                session.setAttribute("errorMsg", "Invalid status value.");
+                return "redirect:/admin/orders";
+            }
+
+            orderService.updateOrderStatus(id, newStatus);
+
+            session.setAttribute("successMsg", "Order status updated to '" + newStatus + "'.");
+        }
+        catch (Exception ex) {
+            session.setAttribute("errorMsg", "Failed to update status: " + ex.getMessage());
+        }
+
+        return "redirect:/admin/orders";
     }
 }

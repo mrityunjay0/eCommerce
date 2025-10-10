@@ -83,4 +83,20 @@ public class OrderServiceImpl implements OrderService {
         }
         return "Order not found!";
     }
+
+    @Override
+    public List<ProductOrder> getAllOrders() {
+
+        return productOrderRepository.findAll();
+    }
+
+    @Override
+    public void updateOrderStatus(Integer id, String newStatus) {
+
+        ProductOrder order = productOrderRepository.findById(id).orElse(null);
+        if(order != null) {
+            order.setStatus(newStatus);
+            productOrderRepository.save(order);
+        }
+    }
 }
