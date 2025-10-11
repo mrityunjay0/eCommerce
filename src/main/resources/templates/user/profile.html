@@ -4,6 +4,7 @@
 <head>
     <meta charset="ISO-8859-1">
     <title>My Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
 <section>
@@ -26,7 +27,7 @@
                 <div th:if="${session.errorMsg}"
                      class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
                      role="alert" style="z-index:2000;">
-                    [[${session.errorMsg}]]
+                    <span th:utext="${session.errorMsg}"></span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                 </div>
@@ -108,41 +109,57 @@
                 </div>
 
             </div>
-
-            <hr class="mt-4">
+            <br>
 
             <!-- Change Password -->
+            <hr class="mt-4">
+
+            <div class="d-flex justify-content-center mt-3">
+                <button class="btn btn-outline-danger btn-sm"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#changePasswordCollapse"
+                        aria-expanded="false"
+                        aria-controls="changePasswordCollapse">
+                    <i class="bi bi-lock-fill me-1"></i> Change Password
+                </button>
+            </div>
+
             <div class="col-md-10 offset-md-1 mt-1">
-                <div class="row">
-                    <p class="text-center fs-3">Change Password</p>
-                    <div class="col-md-6 offset-md-3">
-                        <form action="/user/changePassword" method="post" novalidate>
-                            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <div class="collapse" id="changePasswordCollapse">
+                    <div class="row">
+                        <p class="text-center fs-3">Change Password</p>
+                        <div class="col-md-6 offset-md-3">
+                            <form action="/user/updatePassword" method="post"
+                                  onsubmit="return confirm('Are you sure you want to change your password?');">
+                                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-                            <div class="mb-3">
-                                <label for="currentPassword" class="form-label">Current Password</label>
-                                <input id="currentPassword" name="currentPassword" type="password" class="form-control"
-                                       autocomplete="current-password" required>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Current Password</label>
+                                    <input id="currentPassword" name="currentPassword" type="password" class="form-control"
+                                           autocomplete="current-password" required>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="newPassword" class="form-label">New Password</label>
-                                <input id="newPassword" name="newPassword" type="password" class="form-control"
-                                       minlength="8" autocomplete="new-password" required>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">New Password</label>
+                                    <input id="newPassword" name="newPassword" type="password" class="form-control"
+                                           minlength="8" autocomplete="new-password" required>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                <input id="confirmPassword" name="confirmPassword" type="password" class="form-control"
-                                       minlength="8" autocomplete="new-password" required>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                    <input id="confirmPassword" name="confirmPassword" type="password" class="form-control"
+                                           minlength="8" autocomplete="new-password" required>
+                                </div>
 
-                            <div class="text-center">
-                                <button onclick="return confirm('Are you sure you want to update the profile?')"
-                                        class="btn btn-primary btn-sm col-md-4">Update</button>
-                            </div>
-                        </form>
-                        <small class="text-muted d-block mt-2">Tip: use at least 8 characters with a mix of letters, numbers and symbols.</small>
+                                <div class="text-center">
+                                    <button class="btn btn-primary btn-sm col-md-4">Update</button>
+                                </div>
+                            </form>
+                            <small class="text-muted d-block mt-2">
+                                Tip: use at least 8 characters with a mix of letters, numbers and symbols.
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>

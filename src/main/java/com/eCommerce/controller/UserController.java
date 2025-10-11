@@ -265,4 +265,36 @@ public class UserController {
         }
         return "redirect:/user/profile";
     }
+
+
+    // Update user password
+    @PostMapping("/updatePassword")
+    public String updatePassword(@RequestParam("currentPassword") String currentPassword, @RequestParam("newPassword") String newPassword,
+                                 @RequestParam("confirmPassword") String confirmPassword, Principal p, HttpSession session) {
+
+        // Must be logged in
+        User loggedIn = getLoggedInUserDetails(p);
+        if (loggedIn == null) {
+            session.setAttribute("errorMsg", "You must be logged in to change your password.");
+            return "redirect:/user/profile";
+        }
+
+        // Basic validations
+        if (!newPassword.equals(confirmPassword)) {
+            session.setAttribute("errorMsg", "New password and confirm password do not match.");
+            return "redirect:/user/profile";
+        }
+        if (newPassword.length() < 8) {
+            session.setAttribute("errorMsg", "New password must be at least 8 characters.");
+            return "redirect:/user/profile";
+        }
+
+        boolean success = userService.changePassword(currentPassword, newPassword, loggedIn.getId());
+        if (success) {
+            session.setAttribute("successMsg", "Password changed successfully.");
+        } else {
+            session.setAttribute("errorMsg", "Current password is incorrect. <a href='/forgotPassword' class='alert-link'>Forgot Password?</a>");
+        }
+        return "redirect:/user/profile";
+    }
 }

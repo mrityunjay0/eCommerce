@@ -35,4 +35,6 @@ public interface UserService {
     User getUserByResetToken(String resetToken);
 
     User updateUser(User user);
+
+    boolean changePassword(String oldPassword, String newPassword, int id);
 }
