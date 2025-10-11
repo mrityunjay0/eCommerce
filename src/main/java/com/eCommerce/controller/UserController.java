@@ -5,10 +5,14 @@ import com.eCommerce.service.*;
 import com.eCommerce.utils.CommonUtils;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Collections;
@@ -211,5 +215,54 @@ public class UserController {
         String msg = orderService.cancelOrder(id, st);
         session.setAttribute("successMsg", msg);
         return "redirect:/user/myOrders";
+    }
+
+
+    // User profile
+    @GetMapping("/profile" )
+    public String profile() {
+
+        return "user/profile";
+    }
+
+
+    // Update user profile
+    @PostMapping("/updateProfile")
+    public String updateProfile(@ModelAttribute User form, @RequestParam(value = "file", required = false)
+                                    MultipartFile file, Principal p, HttpSession session) throws IOException {
+
+        // Must be logged in
+        User loggedIn = getLoggedInUserDetails(p);
+        if (loggedIn == null) {
+            session.setAttribute("errorMsg", "You must be logged in to update your profile.");
+            return "redirect:/user/profile";
+        }
+
+        // --- 1) Merge ONLY allowed fields (never trust client for sensitive ones) ---
+        loggedIn.setName(form.getName());
+        loggedIn.setPhone(form.getPhone());
+        loggedIn.setEmail(form.getEmail());
+        loggedIn.setAddress(form.getAddress());
+        loggedIn.setCity(form.getCity());
+        loggedIn.setState(form.getState());
+        loggedIn.setPincode(form.getPincode());
+        // Keep email/role/enabled/password as-is (email is readonly in your UI)
+
+        // --- 2) Handle image upload if any ---
+        String imageName = file.isEmpty() ? loggedIn.getProfileImage() : file.getOriginalFilename();
+        loggedIn.setProfileImage(imageName); // Set the profile image name
+
+        User updated = userService.updateUser(loggedIn);
+        if (updated == null) {
+            session.setAttribute("errorMsg", "Failed to update profile. Please try again.");
+        }
+        else {
+            File saveFile = new ClassPathResource("static/img/profile_img").getFile();
+            File file1 = new File(saveFile.getAbsolutePath()+File.separator+imageName);
+            file.transferTo(file1); // Save the profile image to the specified directory
+
+            session.setAttribute("successMsg", "User updated successfully.");
+        }
+        return "redirect:/user/profile";
     }
 }

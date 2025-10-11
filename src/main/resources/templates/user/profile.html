@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>My Profile</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid mt-2 p-5 bg-light">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+
+                <p class="fs-3 text-center">My Profile</p>
+
+                <!-- SUCCESS MESSAGE -->
+                <div th:if="${session.successMsg}"
+                     class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                     role="alert" style="z-index:2000;">
+                    [[${session.successMsg}]]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </div>
+
+                <!-- ERROR MESSAGE -->
+                <div th:if="${session.errorMsg}"
+                     class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow"
+                     role="alert" style="z-index:2000;">
+                    [[${session.errorMsg}]]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </div>
+
+                <hr>
+
+                <!-- Avatar -->
+                <div class="text-center">
+                    <img alt="Profile picture"
+                         th:src="@{${user.profileImage} != null ? '/img/profile_img/' + ${user.profileImage} : '/img/profile_img/default.png'}"
+                         class="border p-2 object-fit-cover"
+                         style="width:110px;height:110px;border-radius:50%;">
+                </div>
+
+                <!-- Profile form -->
+                <div class="col-md-8 offset-md-2 mt-4">
+                    <form action="/user/updateProfile" method="post" enctype="multipart/form-data" th:object="${user}"
+                          onsubmit="return confirm('Are you sure you want to update your profile?');">
+                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input id="name" th:field="*{name}" type="text" class="form-control" maxlength="80" autocomplete="name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Mobile Number</label>
+                            <input id="phone" th:field="*{phone}" type="tel" class="form-control"
+                                   pattern="[0-9]{10}" inputmode="numeric" autocomplete="tel"
+                                   placeholder="10-digit number">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input id="email" th:field="*{email}" type="email" class="form-control" autocomplete="email" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input id="address" th:field="*{address}" type="text" class="form-control" autocomplete="street-address">
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <input id="city" th:field="*{city}" type="text" class="form-control" autocomplete="address-level2">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="state" class="form-label">State</label>
+                                <input id="state" th:field="*{state}" type="text" class="form-control" autocomplete="address-level1">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="pincode" class="form-label">Pincode</label>
+                                <input id="pincode" th:field="*{pincode}" type="text" class="form-control"
+                                       pattern="[0-9]{5,6}" inputmode="numeric" autocomplete="postal-code">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 mt-3">
+                            <label class="form-label">Profile Image</label>
+                            <input  name="file" type="file" class="form-control" required
+                                   accept="image/*">
+                            <small class="text-muted">Max ~2MB. JPG/PNG recommended.</small>
+                            <div class="mt-2">
+                                <img id="preview" alt="Preview" class="d-none border" style="width:110px;height:110px;border-radius:50%;">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Role</label>
+                                <input type="text" class="form-control" readonly
+                                       th:value="${user.role == 'ROLE_ADMIN' ? 'ADMIN' : (user.role == 'ROLE_USER' ? 'USER' : user.role)}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Account Status</label><br>
+                                <span class="badge"
+                                      th:classappend="${user.enabled} ? 'bg-success' : 'bg-secondary'"
+                                      th:text="${user.enabled} ? 'Enabled' : 'Disabled'"></span>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-sm px-4">Update</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <hr class="mt-4">
+
+            <!-- Change Password -->
+            <div class="col-md-10 offset-md-1 mt-1">
+                <div class="row">
+                    <p class="text-center fs-3">Change Password</p>
+                    <div class="col-md-6 offset-md-3">
+                        <form action="/user/changePassword" method="post" novalidate>
+                            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label">Current Password</label>
+                                <input id="currentPassword" name="currentPassword" type="password" class="form-control"
+                                       autocomplete="current-password" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">New Password</label>
+                                <input id="newPassword" name="newPassword" type="password" class="form-control"
+                                       minlength="8" autocomplete="new-password" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <input id="confirmPassword" name="confirmPassword" type="password" class="form-control"
+                                       minlength="8" autocomplete="new-password" required>
+                            </div>
+
+                            <div class="text-center">
+                                <button onclick="return confirm('Are you sure you want to update the profile?')"
+                                        class="btn btn-primary btn-sm col-md-4">Update</button>
+                            </div>
+                        </form>
+                        <small class="text-muted d-block mt-2">Tip: use at least 8 characters with a mix of letters, numbers and symbols.</small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Image preview -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+      const input = document.getElementById('profileImage');
+      const preview = document.getElementById('preview');
+      if (input) {
+        input.addEventListener('change', function () {
+          const f = this.files && this.files[0];
+          if (!f) { preview.classList.add('d-none'); return; }
+          const url = URL.createObjectURL(f);
+          preview.src = url;
+          preview.classList.remove('d-none');
+        });
+      }
+    /*]]>*/
+</script>
+</body>
+</html>

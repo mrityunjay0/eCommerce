@@ -6,31 +6,33 @@ import java.util.List;
 
 public interface UserService {
 
-    public User saveUser(User user);
+    User saveUser(User user);
 
-    public User updateUserStatus(User user);
+    User updateUserStatus(User user);
 
-    public User updateUserPassword(User user);
+    User updateUserPassword(User user);
 
     boolean existsByPhone(String phone);
 
-    public User getUserByEmail(String email);
+    User getUserByEmail(String email);
 
 //    public List<User> getAllUsers();
 
-    public List<User> getAllUsersByRole(String role);
+    List<User> getAllUsersByRole(String role);
 
-    public User getUserById(int id);
+    User getUserById(int id);
 
-    public void increaseFailedAttempts(User user);
+    void increaseFailedAttempts(User user);
 
-    public void resetFailedAttempts(int id);
+    void resetFailedAttempts(int id);
 
-    public void userAccountLock(User user);
+    void userAccountLock(User user);
 
-    public boolean unlockWhenTimeExpired(User user);
+    boolean unlockWhenTimeExpired(User user);
 
-    public void updateResetToken(String email, String resetToken);
+    void updateResetToken(String email, String resetToken);
 
-    public User getUserByResetToken(String resetToken);
+    User getUserByResetToken(String resetToken);
+
+    User updateUser(User user);
 }
