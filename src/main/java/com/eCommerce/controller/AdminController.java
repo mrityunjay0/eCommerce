@@ -8,6 +8,8 @@ import com.eCommerce.service.CategoryService;
 import com.eCommerce.service.OrderService;
 import com.eCommerce.service.ProductService;
 import com.eCommerce.service.UserService;
+import com.eCommerce.utils.CommonUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -30,13 +32,15 @@ public class AdminController {
     private ProductService productService;
     private UserService userService;
     private OrderService orderService;
+    private CommonUtils commonUtils;
 
     public AdminController(CategoryService categoryService, ProductService productService,
-                           UserService userService, OrderService orderService) {
+                           UserService userService, OrderService orderService, CommonUtils commonUtils) {
         this.categoryService = categoryService;
         this.productService = productService;
         this.userService = userService;
         this.orderService = orderService;
+        this.commonUtils = commonUtils;
     }
 
     @ModelAttribute
@@ -320,7 +324,8 @@ public class AdminController {
 
     // Updates the status of an order based on admin input
     @PostMapping("/updateOrderStatus")
-    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer status, HttpSession session) {
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer status,
+                                    HttpSession session, HttpServletRequest request) {
 
         try {
             if (id == null || status == null) {
@@ -345,14 +350,24 @@ public class AdminController {
                 return "redirect:/admin/orders";
             }
 
+            // Update in DB
             orderService.updateOrderStatus(id, newStatus);
 
+            // Fetch the updated order (ensure this exists in your service)
+            ProductOrder updated = orderService.getOrdersById(id);
+
+            // Fire the email (errors are caught & surfaced in the session)
+            try {
+                commonUtils.sendOrderStatusUpdateMail(updated, newStatus, request);
+            } catch (Exception mailEx) {
+                // don't block admin flow if mail fails
+                session.setAttribute("errorMsg", "Order updated, but email failed: " + mailEx.getMessage());
+            }
+
             session.setAttribute("successMsg", "Order status updated to '" + newStatus + "'.");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             session.setAttribute("errorMsg", "Failed to update status: " + ex.getMessage());
         }
-
         return "redirect:/admin/orders";
     }
 }

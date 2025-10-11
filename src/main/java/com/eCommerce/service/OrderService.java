@@ -16,4 +16,6 @@ public interface OrderService {
     List<ProductOrder> getAllOrders();
 
     void updateOrderStatus(Integer orderId, String newStatus);
+
+    ProductOrder getOrdersById(Integer id);
 }

@@ -102,4 +102,10 @@ public class OrderServiceImpl implements OrderService {
             productOrderRepository.save(order);
         }
     }
+
+    @Override
+    public ProductOrder getOrdersById(Integer id) {
+
+        return productOrderRepository.findById(id).orElse(null);
+    }
 }

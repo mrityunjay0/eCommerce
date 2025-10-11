@@ -170,6 +170,87 @@ public class CommonUtils {
     }
 
 
+
+    // Send order status update email
+    public boolean sendOrderStatusUpdateMail(ProductOrder order, String newStatus,
+                                             HttpServletRequest request)
+            throws MessagingException, UnsupportedEncodingException {
+
+        if (order == null || order.getOrderAddress() == null) return false;
+        String to = order.getOrderAddress().getEmail();
+        if (to == null || to.isBlank()) return false;
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        // enable UTF-8 and HTML
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setFrom("yaduvanshimrityunjay461@gmail.com", "Shopping Cart");
+        helper.setTo(to);
+        helper.setSubject("Order " + safe(order.getOrderId()) + " status updated: " + safe(newStatus));
+
+        double qty   = order.getQuantity() == null ? 0 : order.getQuantity();
+        double price = order.getPrice() == null ? 0.0 : order.getPrice();
+        double total = qty * price;
+
+        // Build a link to the order detail (adjust the path to your real route)
+        String base = generateUrl(request);                 // e.g. http://localhost:8080
+        String orderLink = base + "/user/order/" + safe(order.getOrderId());
+
+        String body = """
+      <div style="font-family:Arial,sans-serif;color:#333">
+        <h2>Order Update</h2>
+        <p>Hello %s %s,</p>
+        <p>The status of your order <b>%s</b> has been updated to <b>%s</b>.</p>
+
+        <table cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%%">
+          <thead>
+            <tr style="background:#f5f5f5">
+              <th align="left">Product</th>
+              <th align="center">Qty</th>
+              <th align="right">Price</th>
+              <th align="right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>%s</td>
+              <td align="center">%s</td>
+              <td align="right">$%.2f</td>
+              <td align="right">$%.2f</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style="margin-top:16px">
+          <a href="%s" style="display:inline-block;background:#0d6efd;color:#fff;padding:10px 14px;border-radius:6px;text-decoration:none">
+            View Order
+          </a>
+        </p>
+
+        <p>We’ll keep you posted on further updates.</p>
+        <p>Thank you for shopping with us!</p>
+      </div>
+      """.formatted(
+                esc(order.getOrderAddress().getFirstName()),
+                esc(order.getOrderAddress().getLastName()),
+                esc(order.getOrderId()),
+                esc(newStatus),
+                order.getProduct() != null ? esc(order.getProduct().getTitle()) : "-",
+                (int) qty,
+                price,
+                total,
+                orderLink
+        );
+
+        helper.setText(body, true);
+        javaMailSender.send(message);
+        return true;
+    }
+
+    // (Keep your existing esc(...) and generateUrl(...) methods)
+    private static String safe(Object o) { return o == null ? "" : String.valueOf(o); }
+
+
     // Generate site URL for email links
     public static String generateUrl(HttpServletRequest request) {
 
