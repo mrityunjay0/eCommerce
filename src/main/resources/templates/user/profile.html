@@ -43,21 +43,25 @@
 
                 <!-- Profile form -->
                 <div class="col-md-8 offset-md-2 mt-4">
-                    <form action="/user/updateProfile" method="post" enctype="multipart/form-data" th:object="${user}"
-                          onsubmit="return confirm('Are you sure you want to update your profile?');">
+                    <form action="/user/updateProfile"
+                          method="post"
+                          enctype="multipart/form-data"
+                          th:object="${user}"
+                          onsubmit="return confirm('Are you sure you want to update your profile?');"
+                          id="profileForm">
+
                         <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                         <input type="hidden" th:field="*{id}">
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input id="name" th:field="*{name}" type="text" class="form-control" maxlength="80" autocomplete="name" required>
+                            <input id="name" th:field="*{name}" type="text" class="form-control editable-field" maxlength="80" autocomplete="name" disabled>
                         </div>
 
                         <div class="mb-3">
                             <label for="phone" class="form-label">Mobile Number</label>
-                            <input id="phone" th:field="*{phone}" type="tel" class="form-control"
-                                   pattern="[0-9]{10}" inputmode="numeric" autocomplete="tel"
-                                   placeholder="10-digit number">
+                            <input id="phone" th:field="*{phone}" type="tel" class="form-control editable-field"
+                                   pattern="[0-9]{10}" inputmode="numeric" autocomplete="tel" disabled>
                         </div>
 
                         <div class="mb-3">
@@ -67,51 +71,38 @@
 
                         <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
-                            <input id="address" th:field="*{address}" type="text" class="form-control" autocomplete="street-address">
+                            <input id="address" th:field="*{address}" type="text" class="form-control editable-field" autocomplete="street-address" disabled>
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="city" class="form-label">City</label>
-                                <input id="city" th:field="*{city}" type="text" class="form-control" autocomplete="address-level2">
+                                <input id="city" th:field="*{city}" type="text" class="form-control editable-field" disabled>
                             </div>
                             <div class="col-md-4">
                                 <label for="state" class="form-label">State</label>
-                                <input id="state" th:field="*{state}" type="text" class="form-control" autocomplete="address-level1">
+                                <input id="state" th:field="*{state}" type="text" class="form-control editable-field" disabled>
                             </div>
                             <div class="col-md-2">
                                 <label for="pincode" class="form-label">Pincode</label>
-                                <input id="pincode" th:field="*{pincode}" type="text" class="form-control"
-                                       pattern="[0-9]{5,6}" inputmode="numeric" autocomplete="postal-code">
+                                <input id="pincode" th:field="*{pincode}" type="text" class="form-control editable-field"
+                                       pattern="[0-9]{5,6}" inputmode="numeric" disabled>
                             </div>
                         </div>
 
                         <div class="mb-3 mt-3">
                             <label class="form-label">Profile Image</label>
-                            <input  name="file" type="file" class="form-control" required
-                                   accept="image/*">
+                            <input id="profileImage" name="file" type="file" class="form-control editable-field"
+                                   required accept="image/*" disabled>
                             <small class="text-muted">Max ~2MB. JPG/PNG recommended.</small>
-                            <div class="mt-2">
-                                <img id="preview" alt="Preview" class="d-none border" style="width:110px;height:110px;border-radius:50%;">
-                            </div>
                         </div>
 
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Role</label>
-                                <input type="text" class="form-control" readonly
-                                       th:value="${user.role == 'ROLE_ADMIN' ? 'ADMIN' : (user.role == 'ROLE_USER' ? 'USER' : user.role)}">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Account Status</label><br>
-                                <span class="badge"
-                                      th:classappend="${user.enabled} ? 'bg-success' : 'bg-secondary'"
-                                      th:text="${user.enabled} ? 'Enabled' : 'Disabled'"></span>
-                            </div>
-                        </div>
-
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary btn-sm px-4">Update</button>
+                        <div class="text-center mt-3">
+                            <button type="button" id="editBtn" class="btn btn-outline-primary btn-sm"
+                                    onclick="enterEdit()">Edit Profile</button>
+                            <button type="submit" id="updateBtn" class="btn btn-primary btn-sm px-4 d-none">Update</button>
+                            <button type="button" id="cancelBtn" class="btn btn-secondary btn-sm px-4 d-none"
+                                    onclick="exitEdit(true)">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -158,23 +149,54 @@
 
         </div>
     </div>
+
+    <script>
+        // expose globally so onclick="" can call them
+        window.enterEdit = function () {
+          const fields    = Array.from(document.querySelectorAll('.editable-field'));
+          const editBtn   = document.getElementById('editBtn');
+          const updateBtn = document.getElementById('updateBtn');
+          const cancelBtn = document.getElementById('cancelBtn');
+          const fileInput = document.getElementById('profileImage') || document.querySelector('input[name="file"]');
+
+          // store originals on form to restore on cancel
+          const form = document.getElementById('profileForm');
+          form._originals = new Map();
+          fields.forEach(f => {
+            form._originals.set(f.id || f.name, f.value);
+            f.removeAttribute('disabled');
+          });
+          if (fileInput) fileInput.value = '';
+
+          editBtn.classList.add('d-none');
+          updateBtn.classList.remove('d-none');
+          cancelBtn.classList.remove('d-none');
+        };
+
+        window.exitEdit = function (restore) {
+          const fields    = Array.from(document.querySelectorAll('.editable-field'));
+          const editBtn   = document.getElementById('editBtn');
+          const updateBtn = document.getElementById('updateBtn');
+          const cancelBtn = document.getElementById('cancelBtn');
+          const form      = document.getElementById('profileForm');
+
+          if (restore && form && form._originals) {
+            fields.forEach(f => {
+              const key = f.id || f.name;
+              if (form._originals.has(key)) f.value = form._originals.get(key);
+            });
+            const fileInput = document.getElementById('profileImage') || document.querySelector('input[name="file"]');
+            if (fileInput) fileInput.value = '';
+          }
+
+          fields.forEach(f => f.setAttribute('disabled', 'true'));
+          updateBtn.classList.add('d-none');
+          cancelBtn.classList.add('d-none');
+          editBtn.classList.remove('d-none');
+        };
+    </script>
+
 </section>
 
-<!-- Image preview -->
-<script th:inline="javascript">
-    /*<![CDATA[*/
-      const input = document.getElementById('profileImage');
-      const preview = document.getElementById('preview');
-      if (input) {
-        input.addEventListener('change', function () {
-          const f = this.files && this.files[0];
-          if (!f) { preview.classList.add('d-none'); return; }
-          const url = URL.createObjectURL(f);
-          preview.src = url;
-          preview.classList.remove('d-none');
-        });
-      }
-    /*]]>*/
-</script>
 </body>
 </html>
