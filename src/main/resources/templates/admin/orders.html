@@ -62,7 +62,7 @@
                     <tbody>
                     <!-- Search result branch -->
                     <th:block th:if="${srch}">
-                        <th:block th:if="${orderDtls != null}">
+                        <th:block th:if="${order != null}">
                             <tr>
                                 <td>[[${order.orderId}]]</td>
                                 <td>
@@ -78,7 +78,7 @@
                                 <td>
                                     Quantity : [[${order.quantity}]]<br>
                                     Price : [[${order.price}]]<br>
-                                    Total : [[${order.quantity * orderDtls.price}]]
+                                    Total : [[${order.quantity * order.price}]]
                                 </td>
                                 <td>[[${order.status}]]</td>
                                 <td>

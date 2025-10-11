@@ -110,8 +110,8 @@ public class CommonUtils {
             ));
         }
 
-        double deliveryFee = 0.0; // set your real values if any
-        double tax = 0.0;
+        double deliveryFee = 250; // set your real values if any
+        double tax = 100;         // set your real values if any
         double grand = itemsTotal + deliveryFee + tax;
 
         // If you don't have a checkout/batch id, show first orderId or "N/A"

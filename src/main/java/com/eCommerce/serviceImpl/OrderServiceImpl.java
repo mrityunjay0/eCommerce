@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
             productOrder.setOrderDate(new Date());
             productOrder.setProduct(c.getProduct());
             productOrder.setUser(c.getUser());
-            productOrder.setPrice(c.getProduct().getPrice());
+            productOrder.setPrice(c.getProduct().getDiscountPrice());
             productOrder.setQuantity(c.getQuantity());
             productOrder.setStatus(OrderStatus.IN_PROGRESS.getDescription());
             productOrder.setPaymentMethod(orderRequest.getPaymentMethod());
