@@ -48,4 +48,12 @@ public class ProductServiceImpl implements ProductService {
         }
         return productRepository.findByIsActiveTrue();
     }
+
+    @Override
+    public List<Product> searchProducts(String ch) {
+        if (ch == null || ch.trim().isEmpty()) {
+            return productRepository.findByIsActiveTrue();
+        }
+        return productRepository.searchActiveProducts(ch.trim());
+    }
 }

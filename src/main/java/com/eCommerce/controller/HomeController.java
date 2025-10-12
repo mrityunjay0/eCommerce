@@ -1,6 +1,7 @@
 package com.eCommerce.controller;
 
 import com.eCommerce.entity.Category;
+import com.eCommerce.entity.Product;
 import com.eCommerce.entity.User;
 import com.eCommerce.service.CartService;
 import com.eCommerce.service.CategoryService;
@@ -214,5 +215,24 @@ public class HomeController {
 
         session.setAttribute("successMsg","Password changed successfully");
         return "redirect:/signin"; // or Option B with token
+    }
+
+
+    // Handles the product search request
+    @GetMapping("/search")
+    public String searchProducts(@RequestParam String ch, Model m) {
+
+        List<Product> products = productService.searchProducts(ch);
+
+        if (products.isEmpty()) {
+            m.addAttribute("errorMsg", "No products found.");
+        }
+
+        m.addAttribute("products", products);
+        m.addAttribute("paramValue", null); // so category “active” state doesn’t break
+
+        m.addAttribute("categories", categoryService.getAllActiveCategories()); // Adds active categories to the model
+        
+        return "products";
     }
 }

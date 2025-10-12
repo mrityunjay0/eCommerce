@@ -11,12 +11,16 @@
         <div class="container-fluid bg-primary p-3">
             <div class="row">
                 <div class="col-md-8 offset-md-2">
-                    <form>
+
+                    <form th:action="@{/search}" method="get">
                         <div class="input-group">
-                            <input type="text" class="form-control" name="ch">
-                            <button class="btn btn-light text-dark col-md-2 ms-2"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                            <input type="text" class="form-control" name="ch" placeholder="Search by title or category">
+                            <button class="btn btn-light text-dark col-md-2 ms-2">
+                                <i class="fa-solid fa-magnifying-glass"></i> Search
+                            </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -49,7 +53,7 @@
 
                                 <div class="col-12 text-center text-muted"
                                      th:if="${#lists.isEmpty(products)}">
-                                    <p class="fs-5">No products available in this category.</p>
+                                    <p class="fs-5">No products found.</p>
                                 </div>
 
                                 <div class="col-md-3" th:each="prod : ${products}">
