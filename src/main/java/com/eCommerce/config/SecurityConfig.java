@@ -2,6 +2,7 @@ package com.eCommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,13 +42,30 @@ public class SecurityConfig {
     // SecurityConfig.java
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable())
+        http.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**","/js/**","/img/**","/signin","/register","/","/products/**","/category/**").permitAll()
-                        .requestMatchers("/saveUser").permitAll() // permit the registration POST
+                        // static
+                        .requestMatchers("/css/**","/js/**","/img/**","/webjars/**").permitAll()
+
+                        // public pages
+                        .requestMatchers("/","/signin","/register").permitAll()
+                        .requestMatchers("/products","/products/**").permitAll()
+                        .requestMatchers("/viewDetails/**").permitAll()
+
+                        // search must be public (GET)
+                        .requestMatchers(HttpMethod.GET,"/search").permitAll()
+
+                        // auth / account flows that should be public
+                        .requestMatchers("/saveUser").permitAll()
+                        .requestMatchers("/forgotPassword","/resetPassword","/resetPasswordExecute","/resetPassword/**").permitAll()
+
+                        // protected areas
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("USER")
+
+                        // everything else requires auth
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
