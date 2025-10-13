@@ -136,6 +136,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> searchUsersByNameOrEmail(String ch) {
+
+        return userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(ch, ch);
+    }
+
+    @Override
     public void resetFailedAttempts(int id) {
 
     }

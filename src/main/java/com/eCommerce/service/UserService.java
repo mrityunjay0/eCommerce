@@ -37,4 +37,6 @@ public interface UserService {
     User updateUser(User user);
 
     boolean changePassword(String oldPassword, String newPassword, int id);
+
+    List<User> searchUsersByNameOrEmail(String ch);
 }

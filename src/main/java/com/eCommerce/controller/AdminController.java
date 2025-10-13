@@ -412,4 +412,21 @@ public class AdminController {
         return "admin/viewProducts";
     }
 
+
+    @GetMapping("/searchUser")
+    public String searchUser(@RequestParam(required = false) String ch, Model m, HttpSession session) {
+
+        List<User> users = userService.searchUsersByNameOrEmail(ch);
+        if (users == null || users.isEmpty()) {
+            m.addAttribute("isEmpty", true);
+            m.addAttribute("users", List.of());
+            session.setAttribute("errorMsg", "No users found matching: " + ch);
+            return "redirect:/admin/viewUsers";
+        } else {
+            m.addAttribute("isEmpty", false);
+            m.addAttribute("users", users);
+        }
+        return "admin/users";
+    }
+
 }

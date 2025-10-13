@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByRole(String role);
 
     public User findByResetToken(String resetToken);
+
+    List<User> findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String ch, String ch1);
 }
