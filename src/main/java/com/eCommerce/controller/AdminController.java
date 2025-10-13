@@ -370,4 +370,46 @@ public class AdminController {
         }
         return "redirect:/admin/orders";
     }
+
+
+    // Searches for orders by Order ID
+    @GetMapping("/searchOrdersByOrderId")
+    public String searchOrdersByOrderId(@RequestParam(required = false) String orderId, Model m, HttpSession session) {
+
+        if (orderId == null || orderId.trim().isEmpty()) {
+            session.setAttribute("errorMsg", "Please enter a valid Order ID.");
+            return "redirect:/admin/orders";
+        }
+
+        ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
+        if (order == null) {
+            m.addAttribute("isEmpty", true);
+            m.addAttribute("orders", List.of());
+            session.setAttribute("errorMsg", "No orders found with Order ID: " + orderId);
+            return "redirect:/admin/orders";
+        } else {
+            m.addAttribute("isEmpty", false);
+            m.addAttribute("orders", List.of(order));
+        }
+        return "admin/orders";
+    }
+
+
+    // Searches for products by a search string
+    @GetMapping("/searchProducts")
+    public String searchProducts(@RequestParam(required = false) String ch, Model m, HttpSession session) {
+
+        List<Product> products = productService.searchProducts(ch);
+        if (products == null || products.isEmpty()) {
+            m.addAttribute("isEmpty", true);
+            m.addAttribute("products", List.of());
+            session.setAttribute("errorMsg", "No products found matching: " + ch);
+            return "redirect:/admin/viewProducts";
+        } else {
+            m.addAttribute("isEmpty", false);
+            m.addAttribute("products", products);
+        }
+        return "admin/viewProducts";
+    }
+
 }

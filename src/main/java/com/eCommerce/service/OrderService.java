@@ -18,4 +18,6 @@ public interface OrderService {
     void updateOrderStatus(Integer orderId, String newStatus);
 
     ProductOrder getOrdersById(Integer id);
+
+    ProductOrder getOrdersByOrderId(String trim);
 }

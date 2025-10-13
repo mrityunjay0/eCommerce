@@ -108,4 +108,10 @@ public class OrderServiceImpl implements OrderService {
 
         return productOrderRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public ProductOrder getOrdersByOrderId(String trim) {
+
+        return productOrderRepository.findByOrderId(trim);
+    }
 }
